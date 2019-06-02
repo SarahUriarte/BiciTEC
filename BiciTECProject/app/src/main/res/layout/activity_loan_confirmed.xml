@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".LoanConfirmed">
+
+    <RelativeLayout
+        android:id="@+id/finishView"
+        android:layout_width="300dp"
+        android:layout_height="350dp"
+        android:layout_centerInParent="true"
+        android:alpha="0.93"
+        android:background="#FFFF"
+        android:elevation="8dp"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="249dp"
+            android:layout_height="108dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="101dp"
+            android:fontFamily="@font/open_sans"
+            android:text="¿Desea activar el préstamo ahora?"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="94dp"
+            android:layout_height="29dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="25dp"
+            android:layout_marginBottom="40dp"
+            android:background="#000000"
+            android:fontFamily="@font/open_sans"
+            android:text="Cancelar"
+            android:textColor="#ffff" />
+
+        <Button
+            android:id="@+id/btnAccept"
+            android:layout_width="94dp"
+            android:layout_height="29dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="180dp"
+            android:layout_marginBottom="40dp"
+            android:background="#00A89E"
+            android:fontFamily="@font/open_sans"
+            android:text="Aceptar"
+            android:textColor="#ffff" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="61dp"
+            android:layout_height="71dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="21dp"
+            android:src="@drawable/bici_logo" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/progressView"
+        android:layout_width="300dp"
+        android:layout_height="350dp"
+        android:layout_alignTop="@+id/finishView"
+        android:layout_centerHorizontal="true"
+        android:alpha="0.93"
+        android:background="#FFFF"
+        android:elevation="8dp"
+        android:visibility="invisible"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/progressTxt"
+            android:layout_width="192dp"
+            android:layout_height="69dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="56dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="31dp"
+            android:fontFamily="@font/open_sans"
+            android:text="Conectando"
+            android:textSize="30sp" />
+
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="230dp"
+            android:layout_height="228dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="11dp"
+            android:background="@android:color/white"
+            android:src="@drawable/ic_carga"
+            tools:visibility="visible" />
+    </RelativeLayout>
+</RelativeLayout>
+
+
+

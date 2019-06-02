@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LogIn">
+
+
+    <ImageView
+        android:id="@+id/bgImage"
+        android:layout_width="match_parent"
+        android:layout_height="800dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_image" />
+
+
+    <View
+        android:id="@+id/bg_color"
+        android:layout_width="386dp"
+        android:layout_height="513dp"
+        android:layout_alignBottom="@+id/bgImage"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="-1dp"
+        android:alpha="0.6"
+        android:background="#2A3586" />
+
+    <ImageView
+        android:id="@+id/logo_bic_tec"
+        android:layout_width="242dp"
+        android:layout_height="165dp"
+        android:layout_centerHorizontal="true"
+        android:foregroundGravity="center_horizontal"
+        app:srcCompat="@drawable/logo_bici_tec" />
+    <RelativeLayout
+        android:id="@+id/finishView"
+        android:layout_width="300dp"
+        android:layout_height="250dp"
+
+
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        >
+
+
+        <View
+            android:id="@+id/vector2"
+            android:layout_width="300dp"
+            android:layout_height="250dp"
+            android:alpha="0.4"
+            android:background="#2A3586"
+            android:clickable="false"
+            android:elevation="8dp" />
+
+        <EditText
+            android:id="@+id/txtUser"
+            android:layout_width="275dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:backgroundTint="@android:color/white"
+            android:ellipsize="start"
+            android:ems="10"
+            android:fontFamily="@font/open_sans"
+            android:gravity="center_horizontal"
+            android:hint="Usuario"
+            android:inputType="textPersonName"
+            android:textColor="#ffff"
+            android:textColorHint="@android:color/white" />
+
+        <EditText
+            android:id="@+id/txtPassword"
+            android:layout_width="274dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/txtUser"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="120dp"
+            android:ellipsize="start"
+            android:ems="10"
+            android:gravity="center_horizontal"
+            android:hint="Contraseña"
+            android:inputType="textPersonName"
+            android:textColor="#ffff"
+            android:textColorHint="@android:color/white"
+            android:backgroundTint="@android:color/white"
+            />
+        <View
+            android:id="@+id/point1"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="#00A89E"
+            android:layout_marginTop="197dp"
+            android:layout_marginLeft="120dp"
+            />
+        <View
+            android:id="@+id/point2"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="#00A89E"
+            android:layout_marginTop="197dp"
+            android:layout_marginLeft="100dp"
+            />
+        <View
+            android:id="@+id/point3"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="#00A89E"
+            android:layout_marginTop="197dp"
+            android:layout_marginLeft="80dp"
+            />
+        <View
+            android:id="@+id/point4"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="#00A89E"
+            android:layout_marginTop="197dp"
+            android:layout_marginLeft="60dp"
+            />
+
+        <Button
+            android:id="@+id/btnEntrar"
+            android:layout_width="136dp"
+            android:layout_height="83dp"
+            android:layout_alignStart="@+id/point1"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="-6dp"
+            android:layout_marginLeft="120dp"
+            android:layout_marginBottom="7dp"
+            android:background="@drawable/ic_arrow_forward_black_24dp" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/low_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="-26dp"
+        android:layout_marginLeft="-26dp"
+        android:layout_marginBottom="0dp"
+        android:alpha="0.6"
+        android:background="#fff"
+        android:clickable="false" />
+
+    <TextView
+        android:id="@+id/txtInstruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="17dp"
+        android:text="Ingresá correo y contraseña"
+        android:textSize="20sp"
+        app:fontFamily="@font/open_sans" />
+
+    <TextView
+        android:id="@+id/txtRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="95dp"
+        android:fontFamily="@font/open_sans"
+        android:text="Registrarse" />
+
+
+
+</RelativeLayout>
