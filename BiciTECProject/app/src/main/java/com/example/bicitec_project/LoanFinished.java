@@ -17,13 +17,18 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import rx.Observable;
-import rx.Subscriber;
-
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class LoanFinished extends AppCompatActivity{
     /*UI Elements*/
     private RelativeLayout finishView;
+    private RelativeLayout finishViewReq;
 
     private static final int PERMISSION_READ_STATE_LOCATION = 1;
     private LocationManager locationManager;
@@ -142,6 +147,8 @@ public class LoanFinished extends AppCompatActivity{
                 }
             }
         });
+        finishViewReq = (RelativeLayout) findViewById(R.id.finishViewReq);
+        observable.subscribe(observer);
 
     }
     @Override
@@ -161,7 +168,8 @@ public class LoanFinished extends AppCompatActivity{
         /*if(closePadlock()){
             finishView.setVisibility(View.VISIBLE);
         }*/
-        casa.start();
+        //casa.start();
+
     }
 
     private void finishLoanRequest(){
@@ -180,18 +188,58 @@ public class LoanFinished extends AppCompatActivity{
             mBluetoothLeService.enableTXNotification();
             //Log.d("Abel","response_3 not received");
         }
-        if (BluetoothLeService.cont3 == 1) {
-            Toast.makeText(getApplicationContext(), "Devuelta", Toast.LENGTH_SHORT);
-            mBluetoothLeService.disconnect();
-        }
+
+
     }
-    final Observable operationObservable = Observable.create(new Observable.OnSubscribe() {
+    /*final Observable operationObservable = Observable.create(new Observable.OnSubscribe() {
         @Override
         public void call(Object o) {
 
         }
-    });
-     Thread  casa = new Thread() {
+    });*/
+    Observable observable = Observable.create(new ObservableOnSubscribe() {
+        @Override
+        public void subscribe(ObservableEmitter emitter){
+            try {
+                //Thread.sleep(2000);
+                finishLoanRequest();
+                emitter.onComplete();
+            }catch (Exception e){
+                emitter.onError(e);
+            }
+        }
+    }).subscribeOn(Schedulers.io()) // subscribeOn the I/O thread
+            .observeOn(AndroidSchedulers.mainThread()); // observeOn the UI Thread;
+
+    Observer observer = new Observer() {
+        @Override
+        public void onSubscribe(Disposable d) {
+
+        }
+
+        @Override
+        public void onNext(Object o) {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onComplete() {
+            if (BluetoothLeService.cont3 == 1) {
+                Toast.makeText(getApplicationContext(), "Devuelta", Toast.LENGTH_SHORT);
+                mBluetoothLeService.disconnect();
+            }
+            finishViewReq.setVisibility(View.INVISIBLE);
+            finishView.setVisibility(View.VISIBLE);
+        }
+    };
+
+
+     /*Thread  casa = new Thread() {
         @Override
         public void run() {
             try { Thread.sleep(2000); }
@@ -211,7 +259,7 @@ public class LoanFinished extends AppCompatActivity{
                 }
             });
         }
-    };
+    };*/
      /*Thread casa = new Thread() {
          @Override
          public void run() {

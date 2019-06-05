@@ -61,7 +61,7 @@
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="4dp"
             android:layout_toStartOf="@+id/txtDistancia"
-            app:srcCompat="@drawable/ic_huella" />
+            android:background="@drawable/ic_huella" />
 
         <EditText
             android:id="@+id/editText"
@@ -78,10 +78,116 @@
             android:textColor="#00A89E"
             android:textSize="45sp" />
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/finishViewReq"
+        android:layout_width="350dp"
+        android:layout_height="600dp"
+        android:layout_centerInParent="true"
+        android:alpha="0.93"
+        android:background="#FFFF"
+        android:elevation="8dp"
+        android:visibility="visible">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
+        <ImageView
+            android:id="@+id/biciImg"
+            android:layout_width="284dp"
+            android:layout_height="307dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="34dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="281dp"
+            android:layout_toStartOf="@+id/txtDistancia"
+            android:background="@drawable/ic_bici" />
+
+        <ImageView
+            android:id="@+id/line1"
+            android:layout_width="60dp"
+            android:layout_height="75dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="355dp"
+            android:layout_toStartOf="@+id/txtDistancia"
+            android:background="@drawable/ic_line_vector" />
+        <ImageView
+            android:id="@+id/line2"
+            android:layout_width="60dp"
+            android:layout_height="75dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="355dp"
+            android:layout_marginHorizontal="290dp"
+            android:layout_toStartOf="@+id/txtDistancia"
+            android:background="@drawable/ic_line_vector" />
+
+
+
+        <TextView
+            android:id="@+id/textViewClose"
+            android:layout_width="224dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="52dp"
+            android:layout_marginBottom="213dp"
+            android:fontFamily="@font/open_sans_semibold"
+            android:text="Cierre el candado para"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textViewClose2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="66dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="178dp"
+            android:fontFamily="@font/open_sans_semibold"
+            android:text="finalizar el préstamo"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/settings"
+            android:layout_width="53dp"
+            android:layout_height="64dp"
+            android:layout_alignTop="@+id/line2"
+            android:layout_alignEnd="@+id/line2"
+            android:layout_marginHorizontal="290dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="283dp"
+            android:background="@drawable/ic_settings" />
+
+        <TextView
+            android:id="@+id/textProblemas"
+            android:layout_width="280dp"
+            android:layout_height="57dp"
+            android:layout_alignTop="@+id/textViewClose"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="71dp"
+            android:layout_marginTop="104dp"
+            android:layout_marginBottom="85dp"
+            android:fontFamily="@font/open_sans"
+            android:minLines="2"
+            android:text="En caso de que tenga problemas con el cierre presione el botón"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="227dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="71dp"
+            android:layout_marginTop="536dp"
+            android:background="@drawable/ic_boton_finalizar" />
+
+
+    </RelativeLayout>
+
+
 </RelativeLayout>

@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.sarah.bicitec_project"
-        minSdkVersion 21
+        minSdkVersion 17
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -33,9 +33,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.1.0'
     implementation 'com.google.firebase:firebase-database:16.0.5'
     implementation 'me.dm7.barcodescanner:zxing:1.9.8' //Dependendency for the qr scanner
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0' //Dependency to make calls to the API
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
-    implementation 'io.reactivex:rxjava:1.0.14'
-    implementation 'io.reactivex:rxandroid:1.0.1'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16' //Dependency fot the gifs
+    implementation "io.reactivex.rxjava2:rxjava:2.2.9"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 }
