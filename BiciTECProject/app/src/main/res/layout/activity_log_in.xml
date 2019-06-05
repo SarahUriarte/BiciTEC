@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LogIn">
+    tools:context=".LogIn"
+    >
 
 
     <ImageView
@@ -16,23 +17,22 @@
         android:scaleType="centerCrop"
         android:src="@drawable/bg_image" />
 
-
     <View
         android:id="@+id/bg_color"
-        android:layout_width="386dp"
-        android:layout_height="513dp"
+        android:layout_width="395dp"
+        android:layout_height="785dp"
         android:layout_alignBottom="@+id/bgImage"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginStart="-2dp"
+        android:layout_marginLeft="-2dp"
+        android:layout_marginTop="-1dp"
         android:layout_marginEnd="0dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="-1dp"
+        android:layout_marginBottom="1dp"
         android:alpha="0.6"
         android:background="#000" />
 
@@ -45,16 +45,13 @@
         app:srcCompat="@drawable/logo_bici_tec" />
     <RelativeLayout
         android:id="@+id/finishView"
-        android:layout_width="300dp"
-        android:layout_height="250dp"
-
-
+        android:layout_width="320dp"
+        android:layout_height="280dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:background="#000"
+        android:alpha="0.7"
         >
-
-
-
 
         <EditText
             android:id="@+id/txtUser"
@@ -88,58 +85,61 @@
             android:textColorHint="@android:color/white"
             android:backgroundTint="@android:color/white"
             />
-        <View
-            android:id="@+id/point1"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:background="#00A89E"
-            android:layout_marginTop="197dp"
-            android:layout_marginLeft="120dp"
-            />
-        <View
-            android:id="@+id/point2"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:background="#00A89E"
-            android:layout_marginTop="197dp"
-            android:layout_marginLeft="100dp"
-            />
-        <View
-            android:id="@+id/point3"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:background="#00A89E"
-            android:layout_marginTop="197dp"
-            android:layout_marginLeft="80dp"
-            />
-        <View
-            android:id="@+id/point4"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:background="#00A89E"
-            android:layout_marginTop="197dp"
-            android:layout_marginLeft="60dp"
-            />
 
         <Button
             android:id="@+id/btnEntrar"
-            android:layout_width="136dp"
-            android:layout_height="83dp"
-            android:layout_alignStart="@+id/point1"
+            android:layout_width="71dp"
+            android:layout_height="67dp"
+            android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="-6dp"
+            android:layout_marginStart="163dp"
             android:layout_marginLeft="120dp"
-            android:layout_marginBottom="7dp"
-            android:background="@drawable/ic_arrow_forward_black_24dp" />
-        <View
-            android:id="@+id/vector2"
-            android:layout_width="300dp"
-            android:layout_height="250dp"
-            android:alpha="0.4"
-            android:background="#000"
-            android:clickable="false"
-            android:elevation="8dp" />
+            android:layout_marginBottom="47dp"
+            android:background="@drawable/ic_arrow" />
 
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="96dp"
+            android:layout_marginTop="183dp"
+            android:fontFamily="@font/open_sans"
+            android:text="Ingresar"
+            android:textColor="@android:color/white"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/btnForgotPassw"
+            android:layout_width="144dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="90dp"
+            android:layout_marginBottom="13dp"
+            android:background="@drawable/ic_olvido_cont" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/logoView"
+        android:layout_width="243dp"
+        android:layout_height="136dp"
+        android:layout_below="@+id/finishView"
+        android:layout_marginTop="54dp"
+        android:layout_above="@+id/low_bar"
+        android:layout_centerHorizontal="true">
+
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="109dp"
+            android:layout_height="74dp"
+            app:srcCompat="@drawable/ic_logo_gasel"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
 
     <View
@@ -150,31 +150,32 @@
         android:layout_marginStart="-26dp"
         android:layout_marginLeft="-26dp"
         android:layout_marginBottom="0dp"
-        android:alpha="0.6"
-        android:background="#fff"
+        android:background="#000"
         android:clickable="false" />
 
     <TextView
         android:id="@+id/txtInstruction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="384dp"
+        android:layout_height="25dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="17dp"
-        android:text="Ingresá correo y contraseña"
-        android:textSize="20sp"
-        app:fontFamily="@font/open_sans" />
+        android:layout_marginStart="17dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="14dp"
+        android:background="@drawable/ic_credenciales" />
 
     <TextView
         android:id="@+id/txtRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="95dp"
+        android:layout_marginBottom="156dp"
         android:fontFamily="@font/open_sans"
         android:text="Registrarse"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
+
 
 
 

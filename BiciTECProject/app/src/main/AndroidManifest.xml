@@ -31,8 +31,8 @@
         <activity android:name=".LoanFinished" />
         <activity android:name=".LoanConfirmed" />
         <activity android:name=".ActiveLoan" />
-        <activity android:name=".LogIn" />
-        <activity android:name=".QrScanner">
+        <activity android:name=".QrScanner" />
+        <activity android:name=".LogIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
