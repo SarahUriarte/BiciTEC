@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#aaa">
+    <RelativeLayout
+        android:id="@+id/finishView"
+        android:layout_width="310dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="#fff"
+        >
+
+        <ImageView
+            android:id="@+id/img_tecDigital"
+            android:layout_width="122dp"
+            android:layout_height="39dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/tec_digital_logo" />
+
+        <TextView
+            android:layout_width="238dp"
+            android:layout_height="96dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="66dp"
+            android:background="@drawable/ic_txt_verifique_sus_credenciales"
+            android:layout_centerHorizontal="true"/>
+
+        <Button
+            android:id="@+id/btnGotoTec"
+            android:layout_width="139dp"
+            android:layout_height="29dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="200dp"
+            android:background="#00A89E"
+            android:fontFamily="@font/open_sans"
+            android:gravity="center_vertical|center_horizontal"
+            android:textAllCaps="false"
+            android:textColor="#ffff"
+            android:textSize="16dp"
+            />
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="94dp"
+            android:layout_height="29dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="184dp"
+            android:layout_marginTop="200dp"
+            android:background="#000"
+            android:fontFamily="@font/open_sans"
+            android:text="Volver"
+            android:textAllCaps="false"
+            android:textColor="#ffff"
+            android:textSize="16dp"/>
+    </RelativeLayout>
+
+</RelativeLayout>

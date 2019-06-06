@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/incorrectUserPop"
+    android:background="#aaa">
+
+    <RelativeLayout
+        android:id="@+id/finishView"
+        android:layout_width="320dp"
+        android:layout_height="220dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="#fff"
+        >
+
+        <ImageView
+            android:id="@+id/img_error"
+            android:layout_width="81dp"
+            android:layout_height="67dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="27dp"
+            android:background="@drawable/ic_error_face" />
+
+        <TextView
+            android:layout_width="273dp"
+            android:layout_height="57dp"
+            android:layout_below="@id/img_error"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="19dp"
+            android:background="@drawable/ic_tx_usuario_incorrecto" />
+
+        <Button
+            android:id="@+id/btnAccept"
+            android:layout_width="94dp"
+            android:layout_height="29dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="180dp"
+            android:background="#00A89E"
+            android:fontFamily="@font/open_sans"
+            android:text="Aceptar"
+            android:textColor="#ffff" />
+    </RelativeLayout>
+
+</RelativeLayout>

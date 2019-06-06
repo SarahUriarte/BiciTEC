@@ -1,6 +1,7 @@
 package com.example.bicitec_project;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -18,7 +19,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -58,6 +62,8 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
     private BluetoothLeScanner mLEScanner;
     private List<ScanFilter> filters;
 
+    Dialog intructionsPopUp;
+    Dialog readingErrorPopUp;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,19 +84,6 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
-        // Build ScanSetting
-        /*ScanSettings.Builder scanSetting = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
-                .setReportDelay(5000);
-
-        settings = scanSetting.build();
-        // Checks if Bluetooth is supported on the device.
-        /*if (mBluetoothAdapter == null) {
-            Toast.makeText(this, "Not supported in this device",
-                    Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }*/
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -111,6 +104,8 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
         }else{
 
         }
+        intructionsPopUp = new Dialog(this);
+        readingErrorPopUp = new Dialog(this);
     }
 
     private boolean checkPermission() {
@@ -149,61 +144,64 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
     @Override
     public void onResume() {
         super.onResume();
-
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
-            if (checkPermission()) {
-                if (scannerView == null) {
-                    scannerView = new ZXingScannerView(this);
-                    setContentView(scannerView);
-                }
-                scannerView.setResultHandler(this);
-                scannerView.startCamera();
-            } else {
-                requestPermission();
-            }
-        }
-        else {
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_DENIED){
-                requestPermission();
-            }
-            else{
-                if (scannerView == null) {
-                    scannerView = new ZXingScannerView(this);
-                    setContentView(scannerView);
-                }
-                scannerView.setResultHandler(this);
-                scannerView.startCamera();
-            }
-        }
-        if (!mBluetoothAdapter.isEnabled()) {
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
-        }else {
-
-            /*if (Build.VERSION.SDK_INT >= 21) {
-                mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-                settings = new ScanSettings.Builder()
-                        .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
-                        .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
-                        .build();
-                filters = new ArrayList<ScanFilter>();
-            }*/
-
-            if (Build.VERSION.SDK_INT >= 23) {
-                checkLocationPermission();
-                //requestPermissions(INITIAL_PERMS, INITIAL_REQUEST);
-                Log.d("Abel", ">= 23");
-            }
-        }
-
+        showInstructionsPopUp();
         // Initializes list view adapter.
         //mLeDeviceListAdapter = new DeviceScanActivity.LeDeviceListAdapter();
         //setListAdapter(mLeDeviceListAdapter);
         //scanLeDevice(true);
+    }
+    public void showInstructionsPopUp(){
+        Button accept;
+        intructionsPopUp.setContentView(R.layout.qr_instruction_pop_up);
+
+        accept = (Button) intructionsPopUp.findViewById(R.id.btnAccept);
+
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intructionsPopUp.dismiss();
+                int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
+                    if (checkPermission()) {
+                        if (scannerView == null) {
+                            scannerView = new ZXingScannerView(QrScanner.this);
+                            setContentView(scannerView);
+                        }
+                        scannerView.setResultHandler(QrScanner.this);
+                        scannerView.startCamera();
+                    } else {
+                        requestPermission();
+                    }
+                }
+                else {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                            == PackageManager.PERMISSION_DENIED){
+                        requestPermission();
+                    }
+                    else{
+                        if (scannerView == null) {
+                            scannerView = new ZXingScannerView(QrScanner.this);
+                            setContentView(scannerView);
+                        }
+                        scannerView.setResultHandler(QrScanner.this);
+                        scannerView.startCamera();
+                    }
+                }
+                if (!mBluetoothAdapter.isEnabled()) {
+                    if (!mBluetoothAdapter.isEnabled()) {
+                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                    }
+                }else {
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        checkLocationPermission();
+                        //requestPermissions(INITIAL_PERMS, INITIAL_REQUEST);
+                        Log.d("Abel", ">= 23");
+                    }
+                }
+            }
+        });
+        intructionsPopUp.show();
     }
 
     @Override
@@ -282,7 +280,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
                     }
                 }
                 if(!direccionEncontrada){
-                    Toast.makeText(getApplicationContext(),"Diferente",Toast.LENGTH_SHORT);
+                    showErrorReadingPopUp();
                 }
             }
 
@@ -293,28 +291,25 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
         };
         myRef.addValueEventListener(postListener);
     }
+    public void showErrorReadingPopUp(){
+        Button retry;
+        Button digitCode;
+        readingErrorPopUp.setContentView(R.layout.reading_error_pop_up);
 
-    public void existingUser(String email, String password) {
+        retry = (Button) readingErrorPopUp.findViewById(R.id.btnreTry);
+        digitCode = (Button)readingErrorPopUp.findViewById(R.id.btnDigit);
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readingErrorPopUp.dismiss();
+            }
+        });
+        digitCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            //Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            //Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-                        }
-
-                        // ...
-                    }
-                });
+            }
+        });
+        readingErrorPopUp.show();
     }
 }

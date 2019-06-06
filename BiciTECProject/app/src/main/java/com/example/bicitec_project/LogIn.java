@@ -1,9 +1,12 @@
 package com.example.bicitec_project;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,9 +32,14 @@ public class LogIn extends AppCompatActivity {
     private TextView txtPassword;
     private TextView txtRegister;
     private Button btnEnter;
+    private Button forgotCredential;
 
     private Api api; //This is the call to the api
     private String base_url = "http://tecdigital.tec.ac.cr:8082/tds-tdapi/api/";
+
+    //Pop ups
+    private Dialog incorrectUsrPopUp;
+    private Dialog forgotPasswPopUp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +49,7 @@ public class LogIn extends AppCompatActivity {
         txtPassword = (TextView)findViewById(R.id.txtPassword);
         btnEnter = (Button)findViewById(R.id.btnEntrar);
         txtRegister = (TextView)findViewById(R.id.txtRegister);
+        forgotCredential = (Button) findViewById(R.id.btnForgotPassw);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(base_url)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -59,6 +68,12 @@ public class LogIn extends AppCompatActivity {
                 existingUser(usr,pasw);
             }
         });
+        forgotCredential.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showforgotPawwPopUp();
+            }
+        });
         /*txtRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +81,8 @@ public class LogIn extends AppCompatActivity {
                 startActivity(signIn);
             }
         });*/
+        incorrectUsrPopUp = new Dialog(this);
+        forgotPasswPopUp = new Dialog(this);
     }
     private void existingUser(String userName, String password){
         Call<LogInResponse> call = api.authentication(userName,password);
@@ -81,7 +98,8 @@ public class LogIn extends AppCompatActivity {
                     }
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "Usuario o contraseña incorrecta",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Usuario o contraseña incorrecta",Toast.LENGTH_SHORT).show();
+                    showIncorrectUserPopUp();
                 }
             }
 
@@ -92,4 +110,48 @@ public class LogIn extends AppCompatActivity {
         });
     }
 
+    //Pop up incorrect user
+    public void showIncorrectUserPopUp(){
+        Button accept;
+        incorrectUsrPopUp.setContentView(R.layout.incorrect_user_pop_up);
+
+        accept = (Button) incorrectUsrPopUp.findViewById(R.id.btnAccept);
+
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                incorrectUsrPopUp.dismiss();
+            }
+        });
+        incorrectUsrPopUp.show();
+    }
+
+    public void showforgotPawwPopUp(){
+        Button goToTec;
+        Button back;
+        final String tecDigitalURL = "https://tecdigital.tec.ac.cr/register/?return_url=%2fdotlrn%2findex#/";
+        forgotPasswPopUp.setContentView(R.layout.tec_digital_pop_up);
+
+        back = (Button) forgotPasswPopUp.findViewById(R.id.btnBack);
+        goToTec = (Button)forgotPasswPopUp.findViewById(R.id.btnGotoTec);
+        goToTec.setText(Html.fromHtml(getString(R.string.ir_tec_digital)));
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                forgotPasswPopUp.dismiss();
+            }
+        });
+        goToTec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openWebURL(tecDigitalURL);
+            }
+        });
+        forgotPasswPopUp.show();
+    }
+    public void openWebURL( String inURL ) {
+        Intent browse = new Intent( Intent.ACTION_VIEW , Uri.parse( inURL ) );
+
+        startActivity( browse );
+    }
 }

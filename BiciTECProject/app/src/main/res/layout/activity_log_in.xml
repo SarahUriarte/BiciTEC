@@ -7,7 +7,6 @@
     tools:context=".LogIn"
     >
 
-
     <ImageView
         android:id="@+id/bgImage"
         android:layout_width="match_parent"
