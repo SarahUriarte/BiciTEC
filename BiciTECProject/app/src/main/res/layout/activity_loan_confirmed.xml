@@ -23,7 +23,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="243dp"
             android:background="@android:color/white"
-            android:src="@drawable/ic_carga"
+            android:src="@drawable/ic_bici_gif"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
     </RelativeLayout>

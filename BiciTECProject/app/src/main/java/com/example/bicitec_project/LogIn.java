@@ -18,6 +18,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,6 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LogIn extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+
     private TextView txtUser;
     private TextView txtPassword;
     private TextView txtRegister;
@@ -40,11 +43,18 @@ public class LogIn extends AppCompatActivity {
     //Pop ups
     private Dialog incorrectUsrPopUp;
     private Dialog forgotPasswPopUp;
+
+    // User
+    private static User us;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+
         mAuth = FirebaseAuth.getInstance();
+
+
+
         txtUser = (TextView) findViewById(R.id.txtUser);
         txtPassword = (TextView)findViewById(R.id.txtPassword);
         btnEnter = (Button)findViewById(R.id.btnEntrar);
@@ -84,7 +94,7 @@ public class LogIn extends AppCompatActivity {
         incorrectUsrPopUp = new Dialog(this);
         forgotPasswPopUp = new Dialog(this);
     }
-    private void existingUser(String userName, String password){
+    private void existingUser(final String userName, String password){
         Call<LogInResponse> call = api.authentication(userName,password);
         call.enqueue(new Callback<LogInResponse>() {
             @Override
@@ -92,6 +102,7 @@ public class LogIn extends AppCompatActivity {
                 if(response.code() == 200){
                     LogInResponse loginData = response.body();
                     if(loginData.getAuthentication().equals("ok")){
+                        us = new User(userName);
                         Intent qrIntent = new Intent(LogIn.this,QrScanner.class);
                         qrIntent.putExtra("userId",loginData.getUser_id());
                         startActivity(qrIntent);
@@ -153,5 +164,9 @@ public class LogIn extends AppCompatActivity {
         Intent browse = new Intent( Intent.ACTION_VIEW , Uri.parse( inURL ) );
 
         startActivity( browse );
+    }
+
+    public static User getUs() {
+        return us;
     }
 }
