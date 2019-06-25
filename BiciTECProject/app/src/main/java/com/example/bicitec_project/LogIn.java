@@ -105,6 +105,8 @@ public class LogIn extends AppCompatActivity {
                         us = new User(userName);
                         Intent qrIntent = new Intent(LogIn.this,QrScanner.class);
                         qrIntent.putExtra("userId",loginData.getUser_id());
+                        qrIntent.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, "asd");
+                        qrIntent.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,"asd");
                         startActivity(qrIntent);
                     }
                 }
@@ -113,7 +115,6 @@ public class LogIn extends AppCompatActivity {
                     showIncorrectUserPopUp();
                 }
             }
-
             @Override
             public void onFailure(Call<LogInResponse> call, Throwable t) {
 

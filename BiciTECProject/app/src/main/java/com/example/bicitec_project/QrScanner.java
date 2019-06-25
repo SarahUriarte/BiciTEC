@@ -193,7 +193,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
                         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                     }
                 }else {
-                    if (Build.VERSION.SDK_INT >= 23) {
+                    if (Build.VERSION.SDK_INT >= 21) {
                         checkLocationPermission();
                         //requestPermissions(INITIAL_PERMS, INITIAL_REQUEST);
                         Log.d("Abel", ">= 23");
@@ -217,7 +217,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
 
                     boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if (cameraAccepted) {
-                        //Toast.makeText(getApplicationContext(), "Permission Granted, Now you can access camera", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Permission Granted, Now you can access camera", Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Permission Denied, You cannot access and camera", Toast.LENGTH_LONG).show();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -271,7 +271,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
                     Bicycle bici = postSnapshot.getValue(Bicycle.class);
                     if (bici.getAdress().equals(myResult) && bici.getState().equals("available")) {
                         String deviceName = "Adafruit Bluefruit LE";
-                        Intent loanConfirmed = new Intent(QrScanner.this,LoanConfirmed.class);
+                        Intent loanConfirmed = new Intent(QrScanner.this,BtScanner.class);
                         loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, deviceName);
                         loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,bici.getAdress());
                         startActivity(loanConfirmed);

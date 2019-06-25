@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.bicitec_project.Classes.LogInResponse;
 import com.example.bicitec_project.Classes.Record;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -168,17 +169,13 @@ public class LoanConfirmed extends AppCompatActivity {
 
     //Método para insertar en firebase
     public void crearInstanciaFirebase(){
-        /*Historial historial = new Historial();
-        historial.setDate(getDateTime());
-        historial.setAdressFeather(mDeviceAddress);
-        historial.setProcedimiento(procedimiento);
-        String fecha = getDateTime();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Historial");
-        myRef.child(String.valueOf(mDeviceAddress+" "+fecha)).setValue(historial);*/
-        Record record = new Record(LogIn.getUs(),"","","",mDeviceAddress);
-        mDatabase.child("Record").push().setValue(record);
-
+        DatabaseReference myBicycleRef = database.getReference("Bicycle").child(mDeviceAddress).child("state");
+        Record record = new Record(LogIn.getUs().getUserName(),"a","a","a",mDeviceAddress,"En curso");
+        String key = myRef.push().getKey();
+        myRef.child(key).setValue(record);
+        //myBicycleRef.setValue("not available");
     }
 
     private String getDateTime() {
@@ -246,7 +243,7 @@ public class LoanConfirmed extends AppCompatActivity {
                 }
                 if(BluetoothLeService.cont2 == 1){
                     Intent activeLoan = new Intent(LoanConfirmed.this,ActiveLoan.class);
-                    //crearInstanciaFirebase();
+                    crearInstanciaFirebase();
                     activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_NAME, mDeviceName);
                     activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
                     startActivity(activeLoan);
@@ -254,7 +251,7 @@ public class LoanConfirmed extends AppCompatActivity {
             }
         });
 
-        //mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
