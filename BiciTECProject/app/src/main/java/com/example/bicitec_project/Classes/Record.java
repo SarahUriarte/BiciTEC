@@ -4,17 +4,19 @@ import com.example.bicitec_project.User;
 
 public class Record {
     private String user;
-    private String horaInicio;
-    private String horaFin;
-    private String horaActual;
+    private int horaInicio;
+    private int horaFin;
+    private int  cronometro;
+    private int temporizador;
     private String adressFeather;
     private  String estado;
 
-    public Record(String user, String horaInicio, String horaFin, String horaActual, String adressFeather, String estado) {
+    public Record(String user, int horaInicio, int horaFin, int cronometro, int temporizador, String adressFeather, String estado) {
         this.user = user;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
-        this.horaActual = horaActual;
+        this.cronometro = cronometro;
+        this.temporizador = temporizador;
         this.adressFeather = adressFeather;
         this.estado = estado;
     }
@@ -23,16 +25,20 @@ public class Record {
         return user;
     }
 
-    public String getHoraInicio() {
+    public int getHoraInicio() {
         return horaInicio;
     }
 
-    public String getHoraFin() {
+    public int getHoraFin() {
         return horaFin;
     }
 
-    public String getHoraActual() {
-        return horaActual;
+    public int getCronometro() {
+        return cronometro;
+    }
+
+    public int getTemporizador() {
+        return temporizador;
     }
 
     public String getAdressFeather() {

@@ -51,6 +51,9 @@ public class BtScanner extends AppCompatActivity {
     /*------------------------------------------------------------*/
     private Button btn;
 
+    /*-- Boolean to verificate if already came to this activity --*/
+    //private boolean verify = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +67,16 @@ public class BtScanner extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scanLeDevice(true);
+                //scanLeDevice(true);
+                /*Intent loanConfirmed = new Intent(BtScanner.this,LoanConfirmed.class);
+                loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, mDeviceName);
+                loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,btn.getText());
+                finish();
+                if (mScanning) {
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    mScanning = false;
+                }
+                startActivity(loanConfirmed);*/
             }
         });
 
@@ -94,7 +106,10 @@ public class BtScanner extends AppCompatActivity {
             finish();
             return;
         }
-
+       /* if(verify){
+            Intent logIn = new Intent(BtScanner.this,LogIn.class);
+            startActivity(logIn);
+        }*/
     }
     public void checkLocationPermission() {
         permissionCheck = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -176,7 +191,6 @@ public class BtScanner extends AppCompatActivity {
                         //mBluetoothAdapter.stopScan(mScanCallback);
 
                     }
-                    invalidateOptionsMenu();
                 }
             }, SCAN_PERIOD);
 
@@ -196,7 +210,6 @@ public class BtScanner extends AppCompatActivity {
                 //mLEScanner.stopScan(mScanCallback);
             }
         }
-        invalidateOptionsMenu();
     }
     private ScanCallback mScanCallback = new ScanCallback() {
         @Override
@@ -206,13 +219,16 @@ public class BtScanner extends AppCompatActivity {
             final BluetoothDevice btDevice = result.getDevice();
             String device = result.toString();
             if (btDevice != null) {
-                if(btDevice.getAddress().equals(mDeviceAddress)){
-                    Intent loanConfirmed = new Intent(BtScanner.this,LoanConfirmed.class);
-                    loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, mDeviceName);
-                    loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,btDevice.getAddress());
-                    finish();
-                    startActivity(loanConfirmed);
+                Intent loanConfirmed = new Intent(BtScanner.this,LoanConfirmed.class);
+                loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, mDeviceName);
+                loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,btDevice.getAddress());
+                if (mScanning) {
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    mScanning = false;
                 }
+                //verify = true;
+                finish();
+                startActivity(loanConfirmed);
                 if (device.contains("Adafruit Bluefruit LE")) {
                     //connectToDevice(btDevice);
                     device = "Adafruit Bluefruit LE";
@@ -220,6 +236,15 @@ public class BtScanner extends AppCompatActivity {
                     Log.d("dada", device);
                 }
             }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(btDevice.getAddress().equals(mDeviceAddress)){
+                        btn.setText(btDevice.getAddress());
+
+                    }
+                }
+            });
         }
 
         @Override
@@ -241,9 +266,21 @@ public class BtScanner extends AppCompatActivity {
 
                 @Override
                 public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    if(device.getAddress().equals(mDeviceAddress)){
-                        Toast.makeText(getApplicationContext(),"Concidí",Toast.LENGTH_SHORT).show();
-                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                        }
+                    });
+
                 }
             };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mHandler.removeCallbacksAndMessages(null);
+    }
+
 }

@@ -17,10 +17,13 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import org.reactivestreams.Subscription;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -144,11 +147,13 @@ public class LoanFinished extends AppCompatActivity{
                     mBluetoothLeService.disconnect();
                     /*Intent prestamoFinalizado = new Intent(PrestamoActivo.this, PrestamoFinalizado.class);
                     startActivity(prestamoFinalizado);*/
+                    finishViewReq.setVisibility(View.INVISIBLE);
+                    finishView.setVisibility(View.VISIBLE);
                 }
             }
         });
         finishViewReq = (RelativeLayout) findViewById(R.id.finishViewReq);
-        observable.subscribe(observer);
+        //observable.subscribe(observer);
 
     }
     @Override
@@ -159,16 +164,6 @@ public class LoanFinished extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-
-        Log.w("Sarah","Entré al onResume");
-        /*while(!closePadlock()){
-            Log.d("Sarah", "onResume: padlock");
-        }
-        finishView.setVisibility(View.VISIBLE);*/
-        /*if(closePadlock()){
-            finishView.setVisibility(View.VISIBLE);
-        }*/
-        //casa.start();
 
     }
 
@@ -232,9 +227,12 @@ public class LoanFinished extends AppCompatActivity{
             if (BluetoothLeService.cont3 == 1) {
                 Toast.makeText(getApplicationContext(), "Devuelta", Toast.LENGTH_SHORT);
                 mBluetoothLeService.disconnect();
+                Intent logIn = new Intent(LoanFinished.this,LogIn.class);
+                startActivity(logIn);
             }
-            finishViewReq.setVisibility(View.INVISIBLE);
-            finishView.setVisibility(View.VISIBLE);
+            //finishViewReq.setVisibility(View.INVISIBLE);
+            //finishView.setVisibility(View.VISIBLE);
+
         }
     };
 
@@ -317,5 +315,10 @@ public class LoanFinished extends AppCompatActivity{
             }
         }
         return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

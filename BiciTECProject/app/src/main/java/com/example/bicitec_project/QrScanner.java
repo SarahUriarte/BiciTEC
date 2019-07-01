@@ -272,8 +272,9 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
                     if (bici.getAdress().equals(myResult) && bici.getState().equals("available")) {
                         String deviceName = "Adafruit Bluefruit LE";
                         Intent loanConfirmed = new Intent(QrScanner.this,BtScanner.class);
-                        loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, deviceName);
-                        loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,bici.getAdress());
+                        loanConfirmed.putExtra(BtScanner.EXTRAS_DEVICE_NAME, deviceName);
+                        loanConfirmed.putExtra(BtScanner.EXTRAS_DEVICE_ADDRESS,bici.getAdress());
+                        finish();
                         startActivity(loanConfirmed);
                         direccionEncontrada = true;
                         break;

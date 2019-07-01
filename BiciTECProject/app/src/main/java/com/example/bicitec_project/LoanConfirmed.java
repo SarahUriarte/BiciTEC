@@ -31,6 +31,8 @@ import android.widget.Toast;
 
 import com.example.bicitec_project.Classes.LogInResponse;
 import com.example.bicitec_project.Classes.Record;
+import com.example.bicitec_project.Classes.TimerRequest;
+import com.example.bicitec_project.api.Api;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -39,6 +41,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoanConfirmed extends AppCompatActivity {
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
@@ -60,25 +68,10 @@ public class LoanConfirmed extends AppCompatActivity {
     private BluetoothGatt bluetoothGatt;
     private boolean mConnected = false;
     private final static String TAG = LoanConfirmed.class.getSimpleName();
-    /*    ------- variables for the scanner -------  */
-    private BluetoothAdapter mBluetoothAdapter;
-    private BluetoothLeScanner mLEScanner;
-    private List<ScanFilter> filters;
-    private BluetoothGatt mGatt;
-    private ScanSettings settings;
-    private boolean mScanning;
-    private Handler mHandler;
-    private int mStatus;
 
-    private static final int REQUEST_ENABLE_BT = 1;
-    // Stops scanning after 10 seconds.
-    private static final long SCAN_PERIOD = 10000;
-    private int permissionCheck;
-    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
-
-    /*    ------- end for the scanner -------  */
-    /*  ---------- Variables for the database ------------------*/
-    private DatabaseReference mDatabase;
+    /*  ---------- API variables ------------------*/
+    private Api api; //This is the call to the api
+    private String base_url = "http://localhost:3000/api/";
 
     /*----------------------------------------------------------*/
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
@@ -172,9 +165,10 @@ public class LoanConfirmed extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Historial");
         DatabaseReference myBicycleRef = database.getReference("Bicycle").child(mDeviceAddress).child("state");
-        Record record = new Record(LogIn.getUs().getUserName(),"a","a","a",mDeviceAddress,"En curso");
+        Record record = new Record(LogIn.getUs().getUserName(),0,0,0,0,mDeviceAddress,"En curso");
         String key = myRef.push().getKey();
         myRef.child(key).setValue(record);
+        //requesTimer(key,1);
         //myBicycleRef.setValue("not available");
     }
 
@@ -191,25 +185,6 @@ public class LoanConfirmed extends AppCompatActivity {
         setContentView(R.layout.activity_loan_confirmed);
 
         /*******************************************************************/
-        mHandler = new Handler();
-        // Use this check to determine whether BLE is supported on the device.  Then you can
-        // selectively disable BLE-related features.
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(this, "Ble not supported", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-
-        // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
-        // BluetoothAdapter through BluetoothManager.
-        final BluetoothManager bluetoothManager =
-                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
-        // Build ScanSetting
-        ScanSettings.Builder scanSetting = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
-                .setReportDelay(5000);
-
-        settings = scanSetting.build();
 
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -250,8 +225,11 @@ public class LoanConfirmed extends AppCompatActivity {
                 }
             }
         });
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(base_url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        api = retrofit.create(Api.class);
 
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -260,121 +238,32 @@ public class LoanConfirmed extends AppCompatActivity {
         super.onResume();
 
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-        // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
-        // fire an intent to display a dialog asking the user to grant permission to enable it.
-        if (!mBluetoothAdapter.isEnabled()) {
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
-        }else {
 
-            if (Build.VERSION.SDK_INT >= 21) {
-                mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-                settings = new ScanSettings.Builder()
-                        .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
-                        .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
-                        .build();
-                filters = new ArrayList<ScanFilter>();
-            }
-
-            if (Build.VERSION.SDK_INT >= 23) {
-                //checkLocationPermission();
-                //requestPermissions(INITIAL_PERMS, INITIAL_REQUEST);
-                Log.d("Abel", ">= 23");
-            }
-        }
-
-        if (mBluetoothLeService != null) {
-            final boolean result = mBluetoothLeService.connect(mDeviceAddress);
-            Log.d(TAG, "Connect request result=" + result);
-        }
-        scanLeDevice(true);
     }
 
     public static BluetoothLeService getBluethothLeService(){
         return mBluetoothLeService;
     }
 
-    /* ------------------------- Code fot the scanner ----------------------------*/
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private void scanLeDevice(final boolean enable) {
-        if (enable) {
-            // Stops scanning after a pre-defined scan period.
-            mHandler.postDelayed(new Runnable() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-                @Override
-                public void run() {
-                    mScanning = false;
-                    //mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                    if (Build.VERSION.SDK_INT < 21) {
-                        mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                    } else {
-                        //mBluetoothAdapter.stopScan(mScanCallback);
+    private void requesTimer(String token, int action){
+        TimerRequest timerRequest = new TimerRequest(token,action);
+        Call<String> call = api.requestTimer(timerRequest);
 
-                    }
-                    invalidateOptionsMenu();
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(!response.isSuccessful()){
+                    Log.d("Sarah","Me morí");
+                    return;
                 }
-            }, SCAN_PERIOD);
+                Toast.makeText(getApplicationContext(),response.body(),Toast.LENGTH_SHORT).show();
+            }
 
-            mScanning = true;
-            //mBluetoothAdapter.startLeScan(mLeScanCallback);
-            if (Build.VERSION.SDK_INT < 21) {
-                mBluetoothAdapter.startLeScan(mLeScanCallback);
-            } else {
-                mLEScanner.startScan(filters, settings, mScanCallback);
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),"gg",Toast.LENGTH_SHORT).show();
             }
-        } else {
-            mScanning = false;
-            //mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            if (Build.VERSION.SDK_INT < 21) {
-                mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            } else {
-                //mLEScanner.stopScan(mScanCallback);
-            }
-        }
-        invalidateOptionsMenu();
+        });
     }
-    private ScanCallback mScanCallback = new ScanCallback() {
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void onScanResult(int callbackType, ScanResult result) {
-            Log.i("callbackType", String.valueOf(callbackType));
-            Log.i("Abel - result", result.toString());
-            final BluetoothDevice btDevice = result.getDevice();
-            String device = result.toString();
-            if (btDevice != null) {
-                if (device.contains("Adafruit Bluefruit LE")) {
-                    //connectToDevice(btDevice);
-                    device = "Adafruit Bluefruit LE";
-                    Log.d("Ada", device);
-                }
-            }
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    /*mLeDeviceListAdapter.addDevice(btDevice);
-                    mLeDeviceListAdapter.notifyDataSetChanged();*/
-                }
-            });
-        }
 
-        @Override
-        public void onBatchScanResults(List<ScanResult> results) {
-            for (ScanResult sr : results) {
-                Log.i("Abe -ScanResult-Results", sr.toString());
-            }
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            Log.e("Abel - Scan Failed", "Error Code: " + errorCode);
-        }
-    };
-    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-        @Override
-        public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-            Log.d("Sarah","Device"+device);
-        }
-    };
 }
