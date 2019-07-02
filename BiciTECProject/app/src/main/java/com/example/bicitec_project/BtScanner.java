@@ -266,6 +266,6 @@ public class BtScanner extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //Toast.makeText(getApplicationContext(), "I am here", Toast.LENGTH_SHORT).show();
-        mHandler.removeCallbacks(Thread.currentThread(),null);
+        //mHandler.removeCallbacks(Thread.currentThread(),null);
     }
 }

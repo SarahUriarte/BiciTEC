@@ -128,6 +128,7 @@ public class LoanConfirmed extends AppCompatActivity {
                 layoutCofirm.setVisibility(View.VISIBLE);
                 layoutLoading.setVisibility(View.INVISIBLE);
                 Log.d("BroadcastReceiver", "Esta conectado");*/
+                mBluetoothLeService.enableTXNotification();
                 while (true){
                     boolean tryWrite = false;
                     byte[] value = new byte[]{79, 112, 101, 110, 71, 97, 83, 69, 83, 76, 97, 98, 33};
@@ -136,10 +137,16 @@ public class LoanConfirmed extends AppCompatActivity {
                         break;
                     }
                 }
+                mBluetoothLeService.enableTXNotification();
+                int cont = 0;
                 while (BluetoothLeService.cont2 == 0) {
                     Log.d("Abel","cont2 = "+BluetoothLeService.cont2);
                     mBluetoothLeService.enableTXNotification();
                     //Log.d("Abel","response_3 not received");
+                    cont++;
+                    if(cont == 1000){
+                        break;
+                    }
                 }
                 int a = BluetoothLeService.cont2;
                 if(BluetoothLeService.cont2 != 0){
