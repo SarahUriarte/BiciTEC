@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,6 +39,9 @@ public class LoanFinished extends AppCompatActivity{
     private BluetoothLeService mBluetoothLeService = LoanConfirmed.getBluethothLeService();
     private boolean mConnected = false;
     private Button but;
+    private static boolean verify;
+    private Button btnAcept;
+
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -121,7 +123,7 @@ public class LoanFinished extends AppCompatActivity{
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         finishView = (RelativeLayout)findViewById(R.id.finishView);
-        but = (Button)findViewById(R.id.button);
+        but = (Button)findViewById(R.id.btnAccept);
         but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,6 +149,14 @@ public class LoanFinished extends AppCompatActivity{
                 }
             }
         });
+        btnAcept = (Button)findViewById(R.id.btnAccept);
+        btnAcept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent qrScanner = new Intent(LoanFinished.this,QrScanner.class);
+                startActivity(qrScanner);
+            }
+        });
         finishViewReq = (RelativeLayout) findViewById(R.id.finishViewReq);
         observable.subscribe(observer);
 
@@ -159,8 +169,6 @@ public class LoanFinished extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-
-        Log.w("Sarah","Entré al onResume");
         /*while(!closePadlock()){
             Log.d("Sarah", "onResume: padlock");
         }
@@ -169,7 +177,6 @@ public class LoanFinished extends AppCompatActivity{
             finishView.setVisibility(View.VISIBLE);
         }*/
         //casa.start();
-
     }
 
     private void finishLoanRequest(){
@@ -317,5 +324,10 @@ public class LoanFinished extends AppCompatActivity{
             }
         }
         return false;
+    }
+
+    public static boolean isVerify() {
+
+        return verify;
     }
 }

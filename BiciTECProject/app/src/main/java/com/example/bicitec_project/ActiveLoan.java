@@ -49,7 +49,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     /*Services variables*/
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
-    private String mDeviceAddress;
+    private static String mDeviceAddress;
     private String mDeviceName;
     private BluetoothLeService mBluetoothLeService;
     private BluetoothAdapter mBluetoothAdapter;
@@ -88,6 +88,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
                 //updateConnectionState(R.string.connected);
 
                 Toast.makeText(getApplicationContext(), "Conectado", Toast.LENGTH_SHORT).show();
+
                 invalidateOptionsMenu();
                 Log.d("BroadcastReceiver", "Esta conectado");
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
@@ -150,6 +151,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
         setContentView(R.layout.activity_active_loan);
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
+
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, "DEvice not supported", Toast.LENGTH_SHORT).show();
             finish();
@@ -394,5 +396,13 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     @Override
     public void onProviderDisabled(String s) {
 
+    }
+
+    public static String getmDeviceAddress() {
+        return mDeviceAddress;
+    }
+
+    public static void setmDeviceAddress(String mDeviceAddress) {
+        ActiveLoan.mDeviceAddress = mDeviceAddress;
     }
 }

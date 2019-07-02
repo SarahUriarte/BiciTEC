@@ -121,6 +121,10 @@ public class LoanConfirmed extends AppCompatActivity {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
+                layoutCofirm = (RelativeLayout) findViewById(R.id.finishView);
+                layoutLoading = (RelativeLayout) findViewById(R.id.progressView);
+                layoutCofirm.setVisibility(View.VISIBLE);
+                layoutLoading.setVisibility(View.INVISIBLE);
                 Log.d("BroadcastReceiver", "Esta conectado");
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
@@ -132,7 +136,7 @@ public class LoanConfirmed extends AppCompatActivity {
                 //Paso 2.2 Conectarse a la device address del Adafruit Bluefruit LE (Se acaba de hacer aquí)
                 // y esperar la confirmación (Se debe realizar un ciclo para esperar la respuesta)
 
-                while(BluetoothLeService.cont == 0){
+                /*while(BluetoothLeService.cont == 0){
                     Log.d("Abel","cont = "+BluetoothLeService.cont);
 
                     //onCharacteristicChanged debe cambiar a 1 cont cuando se lea la respuesta
@@ -149,7 +153,7 @@ public class LoanConfirmed extends AppCompatActivity {
                     layoutLoading = (RelativeLayout) findViewById(R.id.progressView);
                     layoutCofirm.setVisibility(View.VISIBLE);
                     layoutLoading.setVisibility(View.INVISIBLE);
-                }
+                }*/
                 if(BluetoothLeService.cont2 == 1){
                     Log.d("Sarah","Intentó conectar");
 
@@ -189,19 +193,30 @@ public class LoanConfirmed extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loan_confirmed);
+        /*if(LoanFinished.isVerify()){
+            Intent login = new Intent(LoanConfirmed.this, LogIn.class);
+            //unbindService(mServiceConnection);
+            //mBluetoothLeService = null;
+            //unregisterReceiver(mGattUpdateReceiver);
+            BtScanner.getmHandler();
+            BtScanner.setmHandler(null);
+            //mHandler.removeCallbacks(Thread.currentThread());
+            //mBluetoothLeService.disconnect();
+            startActivity(login);
 
+        }
         /*******************************************************************/
-        mHandler = new Handler();
+        //mHandler = new Handler();
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+        /*if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, "Ble not supported", Toast.LENGTH_SHORT).show();
             finish();
         }
 
         // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
         // BluetoothAdapter through BluetoothManager.
-        final BluetoothManager bluetoothManager =
+        /*final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         // Build ScanSetting
@@ -209,7 +224,7 @@ public class LoanConfirmed extends AppCompatActivity {
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
                 .setReportDelay(5000);
 
-        settings = scanSetting.build();
+        settings = scanSetting.build();*/
 
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -223,7 +238,15 @@ public class LoanConfirmed extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d("Sarah1", "cont "+BluetoothLeService.cont);
                 mBluetoothLeService.enableTXNotification();
-                if(BluetoothLeService.cont == 1){
+                while (true){
+                    boolean tryWrite = false;
+                    byte[] value = new byte[]{79, 112, 101, 110, 71, 97, 83, 69, 83, 76, 97, 98, 33};
+                    tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
+                    if(tryWrite){
+                        break;
+                    }
+                }
+                /*if(BluetoothLeService.cont == 1){
                     Log.d("Abel","cont = "+BluetoothLeService.cont +" response 2.2 received");
                     //Toast.makeText(getApplicationContext(),"Conectado",Toast.LENGTH_SHORT).show();
                     while (true){
@@ -235,7 +258,7 @@ public class LoanConfirmed extends AppCompatActivity {
                         }
                     }
                     //crearInstanciaFirebase("En curso");
-                }
+                }*/
                 while (BluetoothLeService.cont2 == 0) {
                     Log.d("Abel","cont2 = "+BluetoothLeService.cont2);
                     mBluetoothLeService.enableTXNotification();
@@ -262,7 +285,7 @@ public class LoanConfirmed extends AppCompatActivity {
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
         // fire an intent to display a dialog asking the user to grant permission to enable it.
-        if (!mBluetoothAdapter.isEnabled()) {
+        /*if (!mBluetoothAdapter.isEnabled()) {
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -288,17 +311,21 @@ public class LoanConfirmed extends AppCompatActivity {
         if (mBluetoothLeService != null) {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
             Log.d(TAG, "Connect request result=" + result);
-        }
-        scanLeDevice(true);
+        }*/
+        //scanLeDevice(true);
     }
 
     public static BluetoothLeService getBluethothLeService(){
         return mBluetoothLeService;
     }
 
+    public static void setmBluetoothLeService(BluetoothLeService mBluetoothLeService) {
+        LoanConfirmed.mBluetoothLeService = mBluetoothLeService;
+    }
+
     /* ------------------------- Code fot the scanner ----------------------------*/
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private void scanLeDevice(final boolean enable) {
+    //@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    /*private void scanLeDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(new Runnable() {
@@ -334,8 +361,8 @@ public class LoanConfirmed extends AppCompatActivity {
             }
         }
         invalidateOptionsMenu();
-    }
-    private ScanCallback mScanCallback = new ScanCallback() {
+    }*/
+    /*private ScanCallback mScanCallback = new ScanCallback() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -354,12 +381,12 @@ public class LoanConfirmed extends AppCompatActivity {
                 @Override
                 public void run() {
                     /*mLeDeviceListAdapter.addDevice(btDevice);
-                    mLeDeviceListAdapter.notifyDataSetChanged();*/
+                    mLeDeviceListAdapter.notifyDataSetChanged();
                 }
             });
-        }
+        }*/
 
-        @Override
+       /* @Override
         public void onBatchScanResults(List<ScanResult> results) {
             for (ScanResult sr : results) {
                 Log.i("Abe -ScanResult-Results", sr.toString());
@@ -376,5 +403,17 @@ public class LoanConfirmed extends AppCompatActivity {
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
             Log.d("Sarah","Device"+device);
         }
-    };
+    };*/
+       @Override
+       protected void onPause() {
+           super.onPause();
+           unregisterReceiver(mGattUpdateReceiver);
+       }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mServiceConnection);
+        mBluetoothLeService = null;
+    }
 }

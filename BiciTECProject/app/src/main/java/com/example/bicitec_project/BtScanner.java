@@ -34,7 +34,7 @@ public class BtScanner extends AppCompatActivity {
     private BluetoothGatt mGatt;
     private ScanSettings settings;
     private boolean mScanning;
-    private Handler mHandler;
+    private static Handler mHandler;
     private int mStatus;
 
     private static final int REQUEST_ENABLE_BT = 1;
@@ -50,6 +50,8 @@ public class BtScanner extends AppCompatActivity {
     private String mDeviceName;
     /*------------------------------------------------------------*/
     private Button btn;
+    /*-- Variable to verify if this activity was used ---*/
+    private boolean verify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,12 @@ public class BtScanner extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scanLeDevice(true);
+                //scanLeDevice(true);
+                Intent loanConfirmed = new Intent(BtScanner.this,LoanConfirmed.class);
+                loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, mDeviceName);
+                loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,btn.getText());
+                finish();
+                startActivity(loanConfirmed);
             }
         });
 
@@ -94,6 +101,10 @@ public class BtScanner extends AppCompatActivity {
             finish();
             return;
         }
+        /*if(verify){
+            Intent login = new Intent(BtScanner.this, LogIn.class);
+            startActivity(login);
+        }*/
 
     }
     public void checkLocationPermission() {
@@ -207,11 +218,7 @@ public class BtScanner extends AppCompatActivity {
             String device = result.toString();
             if (btDevice != null) {
                 if(btDevice.getAddress().equals(mDeviceAddress)){
-                    Intent loanConfirmed = new Intent(BtScanner.this,LoanConfirmed.class);
-                    loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, mDeviceName);
-                    loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,btDevice.getAddress());
-                    finish();
-                    startActivity(loanConfirmed);
+                    btn.setText(btDevice.getAddress());
                 }
                 if (device.contains("Adafruit Bluefruit LE")) {
                     //connectToDevice(btDevice);
@@ -246,4 +253,19 @@ public class BtScanner extends AppCompatActivity {
                     }
                 }
             };
+
+    public static Handler getmHandler() {
+        return mHandler;
+    }
+
+    public static void setmHandler(Handler mHandler) {
+        BtScanner.mHandler = mHandler;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //Toast.makeText(getApplicationContext(), "I am here", Toast.LENGTH_SHORT).show();
+        mHandler.removeCallbacks(Thread.currentThread(),null);
+    }
 }

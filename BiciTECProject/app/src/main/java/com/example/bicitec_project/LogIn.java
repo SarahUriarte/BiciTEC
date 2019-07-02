@@ -53,8 +53,6 @@ public class LogIn extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-
-
         txtUser = (TextView) findViewById(R.id.txtUser);
         txtPassword = (TextView)findViewById(R.id.txtPassword);
         btnEnter = (Button)findViewById(R.id.btnEntrar);
