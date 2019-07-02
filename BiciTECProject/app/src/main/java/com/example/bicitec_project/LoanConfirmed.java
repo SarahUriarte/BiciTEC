@@ -120,12 +120,35 @@ public class LoanConfirmed extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
+
                 mConnected = true;
+                /*int a = BluetoothLeService.cont2;
                 layoutCofirm = (RelativeLayout) findViewById(R.id.finishView);
                 layoutLoading = (RelativeLayout) findViewById(R.id.progressView);
                 layoutCofirm.setVisibility(View.VISIBLE);
                 layoutLoading.setVisibility(View.INVISIBLE);
-                Log.d("BroadcastReceiver", "Esta conectado");
+                Log.d("BroadcastReceiver", "Esta conectado");*/
+                while (true){
+                    boolean tryWrite = false;
+                    byte[] value = new byte[]{79, 112, 101, 110, 71, 97, 83, 69, 83, 76, 97, 98, 33};
+                    tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
+                    if(tryWrite){
+                        break;
+                    }
+                }
+                while (BluetoothLeService.cont2 == 0) {
+                    Log.d("Abel","cont2 = "+BluetoothLeService.cont2);
+                    mBluetoothLeService.enableTXNotification();
+                    //Log.d("Abel","response_3 not received");
+                }
+                int a = BluetoothLeService.cont2;
+                if(BluetoothLeService.cont2 != 0){
+                    Intent activeLoan = new Intent(LoanConfirmed.this,ActiveLoan.class);
+                    crearInstanciaFirebase();
+                    activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_NAME, mDeviceName);
+                    activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
+                    startActivity(activeLoan);
+                }
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 Log.d("BroadcastReceiver", "No esta conectado");
@@ -264,6 +287,7 @@ public class LoanConfirmed extends AppCompatActivity {
                     mBluetoothLeService.enableTXNotification();
                     //Log.d("Abel","response_3 not received");
                 }
+                int a = BluetoothLeService.cont2;
                 if(BluetoothLeService.cont2 == 1){
                     Intent activeLoan = new Intent(LoanConfirmed.this,ActiveLoan.class);
                     crearInstanciaFirebase();
