@@ -195,6 +195,7 @@ public class LoanFinished extends AppCompatActivity{
             mBluetoothLeService.enableTXNotification();
             //Log.d("Abel","response_3 not received");
         }
+        
 
 
     }
@@ -299,7 +300,6 @@ public class LoanFinished extends AppCompatActivity{
          }
      };*/
     public boolean closePadlock(){
-
         if(mBluetoothLeService != null){
             mBluetoothLeService.enableTXNotification();
             while (true) {
@@ -325,9 +325,12 @@ public class LoanFinished extends AppCompatActivity{
         }
         return false;
     }
-
     public static boolean isVerify() {
 
         return verify;
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
