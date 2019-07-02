@@ -102,23 +102,23 @@ public class LoanConfirmed extends AppCompatActivity {
                 //Paso 2.2 Conectarse a la device address del Adafruit Bluefruit LE (Se acaba de hacer aquí)
                 // y esperar la confirmación (Se debe realizar un ciclo para esperar la respuesta)
 
-                while(BluetoothLeService.cont == 0){
+                /*(BluetoothLeService.cont == 0){
                     Log.d("Abel","cont = "+BluetoothLeService.cont);
 
                     //onCharacteristicChanged debe cambiar a 1 cont cuando se lea la respuesta
                     mBluetoothLeService.enableTXNotification();
                     //Log.d("Abel","response 2.2 not received");
-                }
+                }*/
                 if(BluetoothLeService.cont == 1){
                     Log.d("Abel","cont = "+BluetoothLeService.cont);
 
                     //onCharacteristicChanged debe cambiar a 1 cont cuando se lea la respuesta
-                    mBluetoothLeService.enableTXNotification();
+                    /*mBluetoothLeService.enableTXNotification();
                     //Log.d("Abel","response 2.2 not received");
                     layoutCofirm = (RelativeLayout) findViewById(R.id.finishView);
                     layoutLoading = (RelativeLayout) findViewById(R.id.progressView);
                     layoutCofirm.setVisibility(View.VISIBLE);
-                    layoutLoading.setVisibility(View.INVISIBLE);
+                    layoutLoading.setVisibility(View.INVISIBLE);*/
                 }
                 /*while(BluetoothLeService.cont2 == 0){
                     Log.d("Sarah","cont2 = "+BluetoothLeService.cont2);
@@ -199,7 +199,7 @@ public class LoanConfirmed extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d("Sarah1", "cont "+BluetoothLeService.cont);
                 mBluetoothLeService.enableTXNotification();
-                if(BluetoothLeService.cont == 1){
+                /*if(BluetoothLeService.cont == 1){
                     Log.d("Abel","cont = "+BluetoothLeService.cont +" response 2.2 received");
                     //Toast.makeText(getApplicationContext(),"Conectado",Toast.LENGTH_SHORT).show();
                     while (true){
@@ -211,6 +211,14 @@ public class LoanConfirmed extends AppCompatActivity {
                         }
                     }
                     //crearInstanciaFirebase("En curso");
+                }*/
+                while (true){
+                    boolean tryWrite = false;
+                    byte[] value = new byte[]{79, 112, 101, 110, 71, 97, 83, 69, 83, 76, 97, 98, 33};
+                    tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
+                    if(tryWrite){
+                        break;
+                    }
                 }
                 while (BluetoothLeService.cont2 == 0) {
                     Log.d("Abel","cont2 = "+BluetoothLeService.cont2);
