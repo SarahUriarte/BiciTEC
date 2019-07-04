@@ -254,13 +254,6 @@ public class BtScanner extends AppCompatActivity {
                 }
             };
 
-    public static Handler getmHandler() {
-        return mHandler;
-    }
-
-    public static void setmHandler(Handler mHandler) {
-        BtScanner.mHandler = mHandler;
-    }
 
     @Override
     protected void onDestroy() {
