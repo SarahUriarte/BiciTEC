@@ -68,7 +68,7 @@ public class BtScanner extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //scanLeDevice(true);
-                /*Intent loanConfirmed = new Intent(BtScanner.this,LoanConfirmed.class);
+                Intent loanConfirmed = new Intent(BtScanner.this,LoanConfirmed.class);
                 loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, mDeviceName);
                 loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,btn.getText());
                 finish();
@@ -76,7 +76,7 @@ public class BtScanner extends AppCompatActivity {
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     mScanning = false;
                 }
-                startActivity(loanConfirmed);*/
+                startActivity(loanConfirmed);
             }
         });
 
@@ -219,16 +219,7 @@ public class BtScanner extends AppCompatActivity {
             final BluetoothDevice btDevice = result.getDevice();
             String device = result.toString();
             if (btDevice != null) {
-                Intent loanConfirmed = new Intent(BtScanner.this,LoanConfirmed.class);
-                loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, mDeviceName);
-                loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,btDevice.getAddress());
-                if (mScanning) {
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                    mScanning = false;
-                }
-                //verify = true;
-                finish();
-                startActivity(loanConfirmed);
+
                 if (device.contains("Adafruit Bluefruit LE")) {
                     //connectToDevice(btDevice);
                     device = "Adafruit Bluefruit LE";

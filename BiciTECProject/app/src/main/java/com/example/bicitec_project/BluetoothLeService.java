@@ -139,14 +139,14 @@ public class BluetoothLeService extends Service {
                 // 2.1 Obtener la device address de Firebase
                 // 2.2 Conectarse a la device address del Adafruit Bluefruit LE (Se hizo en DeviceControlActivity activity, en mGattUpdateReceiver)
                 // y esperar la confirmación. En mGattUpdateReceiver mediante un ciclo se espera la respuesta del Adafruit Bluefriut LE
-                if(charaString.equals("CONECTADO")) {//Aquí hay que leer una confirmación para el Paso 2.2. La idea de usar cont es
+                /*if(charaString.equals("CONECTADO")) {//Aquí hay que leer una confirmación para el Paso 2.2. La idea de usar cont es
                     //para leer una solo vez porque hay que recordar que el Adafruit Bluefriut LE esta escribiendo siempre "HOLA_MUNDO".
                     cont += 1;
                     /*if (cont == 2) {//Aquí hay que leer una confirmación para el Paso 3. La idea de usar cont es
                         //para leer una solo vez porque hay que recordar que el Adafruit Bluefriut LE esta escribiendo siempre "HOLA_MUNDO".
                         cont2 += 1;
-                    }*/
-                }
+                    }
+                }*/
                 if(charaString.equals("OpenedGaSESLab!")){
                     cont2 += 1;
                 }
