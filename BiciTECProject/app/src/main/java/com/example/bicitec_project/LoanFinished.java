@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -97,7 +100,7 @@ public class LoanFinished extends AppCompatActivity{
                     Log.d("Sarah", "Intentó conectar");
                     //btnConfirmado = (Button) findViewById(R.id.confirmadoBtn);
                     //btnConfirmado.setVisibility(View.VISIBLE);
-                    //crearInstanciaFirebase("Prestada");
+                    //saveLoanRequest("Prestada");
                     //Intent prestamoActivo = new Intent(DeviceControlActivity.this,PrestamoActivo.class);
                     //startActivity(prestamoActivo);
 
@@ -119,11 +122,12 @@ public class LoanFinished extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loan_finished);
+        final Intent intent = getIntent();
+        mDeviceAddress = intent.getStringExtra("DeviceAdress");
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
         finishView = (RelativeLayout)findViewById(R.id.finishView);
-        but = (Button)findViewById(R.id.btnAccept);
+        but = (Button)findViewById(R.id.buttonFinish);
         but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,6 +150,9 @@ public class LoanFinished extends AppCompatActivity{
                     mBluetoothLeService.disconnect();
                     /*Intent prestamoFinalizado = new Intent(PrestamoActivo.this, PrestamoFinalizado.class);
                     startActivity(prestamoFinalizado);*/
+                    finishViewReq.setVisibility(View.INVISIBLE);
+                    finishView.setVisibility(View.VISIBLE);
+                    finishLoanOnDB();
                 }
             }
         });
@@ -158,7 +165,7 @@ public class LoanFinished extends AppCompatActivity{
             }
         });
         finishViewReq = (RelativeLayout) findViewById(R.id.finishViewReq);
-        observable.subscribe(observer);
+        //observable.subscribe(observer);
 
     }
     @Override
@@ -169,13 +176,6 @@ public class LoanFinished extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        /*while(!closePadlock()){
-            Log.d("Sarah", "onResume: padlock");
-        }
-        finishView.setVisibility(View.VISIBLE);*/
-        /*if(closePadlock()){
-            finishView.setVisibility(View.VISIBLE);
-        }*/
         //casa.start();
     }
 
@@ -246,89 +246,18 @@ public class LoanFinished extends AppCompatActivity{
         }
     };
 
+    private void finishLoanOnDB(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Historial").child(LoanConfirmed.getLoanKey());
+        DatabaseReference myUserRef = database.getReference("User").child(LoanConfirmed.getUserLoanKey());
+        DatabaseReference myBiciRef = database.getReference("Bicycle").child(mDeviceAddress);
+        myRef.child("estado").setValue("Terminado");
+        myUserRef.child("loanState").setValue("Terminado");
+        myBiciRef.child("state").setValue("available");
 
-     /*Thread  casa = new Thread() {
-        @Override
-        public void run() {
-            try { Thread.sleep(2000); }
-            catch (InterruptedException e) {}
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            finishView.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-                }
-            });
-        }
-    };*/
-     /*Thread casa = new Thread() {
-         @Override
-         public void run() {
-             try {
-                 Thread.sleep(2000);
-                 mBluetoothLeService.enableTXNotification();
-                 while (true) {
-                     boolean tryWrite = false;
-                     byte[] value = new byte[]{67, 108, 111, 115, 101, 71, 97, 83, 69, 83, 76, 97, 98, 33};
-                     tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
-                     if (tryWrite) {
-                         break;
-                     }
-                 }
-                 while (BluetoothLeService.cont3 == 0) {
-                     Log.d("Abel", "cont2 = " + BluetoothLeService.cont2);
-                     mBluetoothLeService.enableTXNotification();
-                     //Log.d("Abel","response_3 not received");
-                 }
-                 if (BluetoothLeService.cont3 == 1) {
-                     Toast.makeText(getApplicationContext(), "Devuelta", Toast.LENGTH_SHORT);
-                     mBluetoothLeService.disconnect();
-                 }
-             runOnUiThread(new Runnable() {
-                 @Override
-                 public void run() {
-                     finishView.setVisibility(View.VISIBLE);
-                 }
-             });
-         }
-     };*/
-    public boolean closePadlock(){
-        if(mBluetoothLeService != null){
-            mBluetoothLeService.enableTXNotification();
-            while (true) {
-                boolean tryWrite = false;
-                byte[] value = new byte[]{67, 108, 111, 115, 101, 71, 97, 83, 69, 83, 76, 97, 98, 33};
-                tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
-                if (tryWrite) {
-                    break;
-                }
-            }
-            while (BluetoothLeService.cont3 == 0) {
-                Log.d("Abel", "cont2 = " + BluetoothLeService.cont2);
-                mBluetoothLeService.enableTXNotification();
-                //Log.d("Abel","response_3 not received");
-            }
-            if (BluetoothLeService.cont3 == 1) {
-                Toast.makeText(getApplicationContext(), "Devuelta", Toast.LENGTH_SHORT);
-                mBluetoothLeService.disconnect();
-                    /*Intent prestamoFinalizado = new Intent(PrestamoActivo.this, PrestamoFinalizado.class);
-                    startActivity(prestamoFinalizado);*/
-                return true;
-            }
-        }
-        return false;
     }
-    public static boolean isVerify() {
 
-        return verify;
-    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

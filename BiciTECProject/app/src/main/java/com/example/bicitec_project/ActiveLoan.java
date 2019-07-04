@@ -110,7 +110,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
                     Log.d("Sarah", "Intentó conectar");
                     //btnConfirmado = (Button) findViewById(R.id.confirmadoBtn);
                     //btnConfirmado.setVisibility(View.VISIBLE);
-                    //crearInstanciaFirebase("Prestada");
+                    //saveLoanRequest("Prestada");
                     //Intent prestamoActivo = new Intent(DeviceControlActivity.this,PrestamoActivo.class);
                     //startActivity(prestamoActivo);
 

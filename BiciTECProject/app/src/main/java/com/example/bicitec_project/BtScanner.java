@@ -70,6 +70,10 @@ public class BtScanner extends AppCompatActivity {
                 Intent loanConfirmed = new Intent(BtScanner.this,LoanConfirmed.class);
                 loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, mDeviceName);
                 loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,btn.getText());
+                if (mScanning) {
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    mScanning = false;
+                }
                 finish();
                 startActivity(loanConfirmed);
             }
@@ -217,9 +221,7 @@ public class BtScanner extends AppCompatActivity {
             final BluetoothDevice btDevice = result.getDevice();
             String device = result.toString();
             if (btDevice != null) {
-                if(btDevice.getAddress().equals(mDeviceAddress)){
-                    btn.setText(btDevice.getAddress());
-                }
+
                 if (device.contains("Adafruit Bluefruit LE")) {
                     //connectToDevice(btDevice);
                     device = "Adafruit Bluefruit LE";
@@ -227,6 +229,14 @@ public class BtScanner extends AppCompatActivity {
                     Log.d("dada", device);
                 }
             }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(btDevice.getAddress().equals(mDeviceAddress)){
+                        btn.setText(btDevice.getAddress());
+                    }
+                }
+            });
         }
 
         @Override
@@ -266,6 +276,6 @@ public class BtScanner extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //Toast.makeText(getApplicationContext(), "I am here", Toast.LENGTH_SHORT).show();
-        mHandler.removeCallbacks(Thread.currentThread(),null);
+        //mHandler.removeCallbacks(Thread.currentThread(),null);
     }
 }

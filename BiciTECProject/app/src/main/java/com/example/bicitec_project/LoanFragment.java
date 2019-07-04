@@ -155,7 +155,7 @@ public class LoanFragment extends Fragment {
                     Log.d("Sarah","Intentó conectar");
                     //btnConfirmado = (Button) findViewById(R.id.confirmadoBtn);
                     //btnConfirmado.setVisibility(View.VISIBLE);
-                    //crearInstanciaFirebase("Prestada");
+                    //saveLoanRequest("Prestada");
                     //Intent activeLoan = new Intent(LoanConfirmed.this,ActiveLoan.class);
                     //startActivity(activeLoan);
 
