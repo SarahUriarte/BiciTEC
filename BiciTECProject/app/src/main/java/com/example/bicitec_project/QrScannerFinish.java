@@ -136,6 +136,7 @@ public class QrScannerFinish extends AppCompatActivity implements ZXingScannerVi
 
         if(mDeviceAddress.equals(myResult)){
             Intent loanFinished = new Intent(QrScannerFinish.this,LoanFinished.class);
+            loanFinished.putExtra("DeviceAdress",mDeviceAddress);
             startActivity(loanFinished);
         }
         else{

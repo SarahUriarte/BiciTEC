@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -49,8 +50,10 @@ public class BtScanner extends AppCompatActivity {
     private String mDeviceAddress;
     private String mDeviceName;
     /*------------------------------------------------------------*/
-    private Button btn;
-
+    private Button btnAdress;
+    private Button btnAccept;
+    private RelativeLayout layoutCofirm;
+    private RelativeLayout layoutLoading;
     /*-- Boolean to verificate if already came to this activity --*/
     //private boolean verify = false;
 
@@ -63,23 +66,35 @@ public class BtScanner extends AppCompatActivity {
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
-        btn = (Button)findViewById(R.id.button2);
-        btn.setOnClickListener(new View.OnClickListener() {
+        layoutCofirm = (RelativeLayout) findViewById(R.id.finishView);
+        layoutLoading = (RelativeLayout)findViewById(R.id.progressView);
+        btnAdress = (Button)findViewById(R.id.button2);
+        btnAdress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //scanLeDevice(true);
+
+            }
+        });
+        btnAccept = (Button)findViewById(R.id.btnAccept);
+
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
                 Intent loanConfirmed = new Intent(BtScanner.this,LoanConfirmed.class);
                 loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, mDeviceName);
-                loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,btn.getText());
-                finish();
+                loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS, btnAdress.getText());
+
+                //mLEScanner.stopScan(mScanCallback);
+
                 if (mScanning) {
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     mScanning = false;
                 }
                 startActivity(loanConfirmed);
-            }
-        });
-
+                finish();
+        }});
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -207,7 +222,7 @@ public class BtScanner extends AppCompatActivity {
             if (Build.VERSION.SDK_INT < 21) {
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
             } else {
-                //mLEScanner.stopScan(mScanCallback);
+                mLEScanner.stopScan(mScanCallback);
             }
         }
     }
@@ -219,23 +234,17 @@ public class BtScanner extends AppCompatActivity {
             final BluetoothDevice btDevice = result.getDevice();
             String device = result.toString();
             if (btDevice != null) {
-
-                if (device.contains("Adafruit Bluefruit LE")) {
-                    //connectToDevice(btDevice);
-                    device = "Adafruit Bluefruit LE";
-
-                    Log.d("dada", device);
-                }
-            }
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(btDevice.getAddress().equals(mDeviceAddress)){
-                        btn.setText(btDevice.getAddress());
-
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(btDevice.getAddress().equals(mDeviceAddress)){
+                            btnAdress.setText(btDevice.getAddress());
+                            layoutLoading.setVisibility(View.INVISIBLE);
+                            layoutCofirm.setVisibility(View.VISIBLE);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         @Override
@@ -268,10 +277,9 @@ public class BtScanner extends AppCompatActivity {
             };
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
+        //mHandler.removeCallbacksAndMessages(null);
 
-        mHandler.removeCallbacksAndMessages(null);
     }
-
 }

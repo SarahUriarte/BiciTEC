@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -32,6 +33,7 @@ import android.widget.Toast;
 import com.example.bicitec_project.Classes.LogInResponse;
 import com.example.bicitec_project.Classes.Record;
 import com.example.bicitec_project.Classes.TimerRequest;
+import com.example.bicitec_project.Classes.UserLoan;
 import com.example.bicitec_project.api.Api;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -64,6 +66,9 @@ public class LoanConfirmed extends AppCompatActivity {
 
     private String mDeviceAddress;
     private String mDeviceName;
+    private static String loanKey;
+    private static String userLoanKey;
+
     private static BluetoothLeService mBluetoothLeService;
     private BluetoothGatt bluetoothGatt;
     private boolean mConnected = false;
@@ -73,12 +78,14 @@ public class LoanConfirmed extends AppCompatActivity {
     private Api api; //This is the call to the api
     private String base_url = "http://localhost:3000/api/";
 
+    FirebaseDatabase database;
+
     /*----------------------------------------------------------*/
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+    public final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
@@ -114,10 +121,10 @@ public class LoanConfirmed extends AppCompatActivity {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
-                layoutCofirm = (RelativeLayout) findViewById(R.id.finishView);
+                /*layoutCofirm = (RelativeLayout) findViewById(R.id.finishView);
                 layoutLoading = (RelativeLayout) findViewById(R.id.progressView);
                 layoutCofirm.setVisibility(View.VISIBLE);
-                layoutLoading.setVisibility(View.INVISIBLE);
+                layoutLoading.setVisibility(View.INVISIBLE);*/
                 Log.d("BroadcastReceiver", "Esta conectado");
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
@@ -147,9 +154,30 @@ public class LoanConfirmed extends AppCompatActivity {
                     layoutCofirm.setVisibility(View.VISIBLE);
                     layoutLoading.setVisibility(View.INVISIBLE);
                 }*/
-                if(BluetoothLeService.cont2 == 1){
-                    Log.d("Sarah","Intentó conectar");
-
+                if(mConnected){
+                    while (true){
+                        boolean tryWrite = false;
+                        byte[] value = new byte[]{79, 112, 101, 110, 71, 97, 83, 69, 83, 76, 97, 98, 33};
+                        tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
+                        if(tryWrite){
+                            break;
+                        }
+                    }
+                    while (BluetoothLeService.cont2 == 0) {
+                        Log.d("Abel","cont2 = "+BluetoothLeService.cont2);
+                        mBluetoothLeService.enableTXNotification();
+                        //Log.d("Abel","response_3 not received");
+                    }
+                    if(BluetoothLeService.cont2 == 1){
+                        //Intent activeLoan = new Intent(LoanConfirmed.this,ActiveLoan.class);
+                        //crearInstanciaFirebase();
+                        //saveUserLoan();
+                        /*activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_NAME, mDeviceName);
+                        activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
+                        startActivity(activeLoan);*/
+                        ActiveLoanTask activeLoanTask = new ActiveLoanTask();
+                        activeLoanTask.execute();
+                    }
                 }
                 /***ABEL END */
             }
@@ -166,14 +194,21 @@ public class LoanConfirmed extends AppCompatActivity {
 
     //Método para insertar en firebase
     public void crearInstanciaFirebase(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Historial");
         DatabaseReference myBicycleRef = database.getReference("Bicycle").child(mDeviceAddress).child("state");
         Record record = new Record(LogIn.getUs().getUserName(),0,0,0,0,mDeviceAddress,"En curso");
-        String key = myRef.push().getKey();
-        myRef.child(key).setValue(record);
+        loanKey = myRef.push().getKey();
+        myRef.child(loanKey).setValue(record);
         //requesTimer(key,1);
-        //myBicycleRef.setValue("not available");
+        myBicycleRef.setValue("not available");
+    }
+    public void saveUserLoan(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("User").child(LogIn.getUs().getUserName());
+        //myRef.push().setValue()
+        UserLoan userLoan = new UserLoan(mDeviceAddress,(String)getDateTime(),0,0,"En curso");
+        userLoanKey = myRef.push().getKey();
+        myRef.child(userLoanKey).setValue(userLoan);
     }
 
     private String getDateTime() {
@@ -195,9 +230,10 @@ public class LoanConfirmed extends AppCompatActivity {
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-        btnAccept = (Button)findViewById(R.id.btnAccept);
+        database = FirebaseDatabase.getInstance();
+        //btnAccept = (Button)findViewById(R.id.btnAccept);
 
-        btnAccept.setOnClickListener(new View.OnClickListener() {
+        /*btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("Sarah1", "cont "+BluetoothLeService.cont);
@@ -208,7 +244,7 @@ public class LoanConfirmed extends AppCompatActivity {
 
                     //crearInstanciaFirebase("En curso");
                 }*/
-                while (true){
+                /*while (true){
                     boolean tryWrite = false;
                     byte[] value = new byte[]{79, 112, 101, 110, 71, 97, 83, 69, 83, 76, 97, 98, 33};
                     tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
@@ -223,18 +259,21 @@ public class LoanConfirmed extends AppCompatActivity {
                 }
                 if(BluetoothLeService.cont2 == 1){
                     Intent activeLoan = new Intent(LoanConfirmed.this,ActiveLoan.class);
-                    crearInstanciaFirebase();
+                    //crearInstanciaFirebase();
+                    //saveUserLoan();
                     activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_NAME, mDeviceName);
                     activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
                     startActivity(activeLoan);
-                }
+                }*/
+                /*ActiveLoanTask activeLoanTask = new ActiveLoanTask();
+                activeLoanTask.execute();
             }
-        });
-        Retrofit retrofit = new Retrofit.Builder()
+        });*/
+        /*Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(base_url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        api = retrofit.create(Api.class);
+        api = retrofit.create(Api.class);*/
 
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -243,14 +282,32 @@ public class LoanConfirmed extends AppCompatActivity {
         super.onResume();
 
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        try {
+            Thread.sleep(2000);
+        }catch (Exception e){
 
+        }
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mGattUpdateReceiver);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mServiceConnection);
+        mBluetoothLeService = null;
+    }
+
 
     public static BluetoothLeService getBluethothLeService(){
         return mBluetoothLeService;
     }
 
-    private void requesTimer(String token, int action){
+    /*private void requesTimer(String token, int action){
         TimerRequest timerRequest = new TimerRequest(token,action);
         Call<String> call = api.requestTimer(timerRequest);
 
@@ -269,6 +326,34 @@ public class LoanConfirmed extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"gg",Toast.LENGTH_SHORT).show();
             }
         });
+    }*/
+
+    public static String getLoanKey() {
+        return loanKey;
     }
 
+    public static String getUserLoanKey() {
+        return userLoanKey;
+    }
+    private class ActiveLoanTask extends AsyncTask<Void, Integer, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            crearInstanciaFirebase();
+            saveUserLoan();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            //if(BluetoothLeService.cont2 == 1){
+                Intent activeLoan = new Intent(LoanConfirmed.this,ActiveLoan.class);
+                activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_NAME, mDeviceName);
+                activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
+                finish();
+                startActivity(activeLoan);
+           // }
+        }
+    }
 }

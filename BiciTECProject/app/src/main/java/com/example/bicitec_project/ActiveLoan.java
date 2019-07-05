@@ -55,7 +55,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mConnected = false;
 
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+    /*private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -77,9 +77,9 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
         public void onServiceDisconnected(ComponentName componentName) {
             mBluetoothLeService = null;
         }
-    };
+    };*/
 
-    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+   /* private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
@@ -100,7 +100,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
 
-                /**** ABEL ****/
+                /**** ABEL **
                 //Paso 2.2 Conectarse a la device address del Adafruit Bluefruit LE (Se acaba de hacer aquí)
                 // y esperar la confirmación (Se debe realizar un ciclo para esperar la respuesta)
 
@@ -114,34 +114,34 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
                     //startActivity(prestamoActivo);
 
                 }
-                /***ABEL END */
+                /***ABEL END
             }
 
         }
-    };
+    };*/
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mGattUpdateReceiver);
+        //unregisterReceiver(mGattUpdateReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
-        mBluetoothLeService = null;
+        /*unbindService(mServiceConnection);
+        mBluetoothLeService = null;*/
     }
 
 
-    private static IntentFilter makeGattUpdateIntentFilter() {
+    /*private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;
-    }
+    }*/
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
@@ -150,30 +150,30 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
         setContentView(R.layout.activity_active_loan);
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+        /*if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, "DEvice not supported", Toast.LENGTH_SHORT).show();
             finish();
-        }
+        }*/
 
         // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
         // BluetoothAdapter through BluetoothManager.
-        final BluetoothManager bluetoothManager =
+        /*final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
+        mBluetoothAdapter = bluetoothManager.getAdapter();*/
 
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        /*Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);*/
 
         txtTimer = (TextView) findViewById(R.id.txtTimer);
         txtTimerFinishing = (TextView) findViewById(R.id.txtTimer2);
         txtDistance = (TextView)findViewById(R.id.txtDistance);
 
         cerrarCandado = (Button) findViewById(R.id.btnCerrarCandado);
-        cerrarCandado.setOnClickListener(new View.OnClickListener() {
+        /*cerrarCandado.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 while (true) {
@@ -193,10 +193,10 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
                     Toast.makeText(getApplicationContext(), "Devuelta", Toast.LENGTH_SHORT);
                     mBluetoothLeService.disconnect();
                     /*Intent prestamoFinalizado = new Intent(PrestamoActivo.this, PrestamoFinalizado.class);
-                    startActivity(prestamoFinalizado);*/
+                    startActivity(prestamoFinalizado);
                 }
             }
-        });
+        });*/
         btnFinish = (Button) findViewById(R.id.btnFinishLoan);
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,7 +214,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     protected void onResume() {
         super.onResume();
         Log.w("Sarah","Entré al onResume");
-        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        //registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         /*try {
             int gpsSignal  = Settings.Secure.getInt(getContentResolver(),Settings.Secure.LOCATION_MODE);
             if(gpsSignal == 0){

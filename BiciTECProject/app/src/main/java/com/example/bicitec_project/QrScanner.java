@@ -281,7 +281,10 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
                     }
                 }
                 if(!direccionEncontrada){
-                    showErrorReadingPopUp();
+                    if(!isFinishing()){
+                        showErrorReadingPopUp();
+                    }
+                    //
                 }
             }
 
