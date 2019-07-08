@@ -51,11 +51,11 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
     private String mDeviceAddress;
     private String mDeviceName;
-    private BluetoothLeService mBluetoothLeService;
+    private BluetoothLeService mBluetoothLeService = LoanConfirmed.getBluethothLeService();
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mConnected = false;
 
-    /*private final ServiceConnection mServiceConnection = new ServiceConnection() {
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -77,7 +77,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
         public void onServiceDisconnected(ComponentName componentName) {
             mBluetoothLeService = null;
         }
-    };*/
+    };
 
    /* private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
@@ -165,8 +165,8 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
-        /*Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);*/
+        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         txtTimer = (TextView) findViewById(R.id.txtTimer);
         txtTimerFinishing = (TextView) findViewById(R.id.txtTimer2);

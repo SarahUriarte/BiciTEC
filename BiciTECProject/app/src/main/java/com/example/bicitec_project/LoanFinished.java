@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -77,37 +78,29 @@ public class LoanFinished extends AppCompatActivity{
                 //clearUI();
 
                 Log.d("BroadcastReceiver", "No esta conectado");
-                EndLoanTask endLoanTask = new EndLoanTask();
-                endLoanTask.execute();
+
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
 
                 /**** ABEL ****/
                 //Paso 2.2 Conectarse a la device address del Adafruit Bluefruit LE (Se acaba de hacer aquí)
                 // y esperar la confirmación (Se debe realizar un ciclo para esperar la respuesta)
-                if(mConnected){
-                    while (true) {
-                        boolean tryWrite = false;
-                        byte[] value = new byte[]{67, 108, 111, 115, 101, 71, 97, 83, 69, 83, 76, 97, 98, 33};
-                        tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
-                        if (tryWrite) {
-                            break;
-                        }
-                    }
-                    while (BluetoothLeService.cont3 == 0) {
-                        Log.d("Abel", "cont2 = " + BluetoothLeService.cont2);
-                        mBluetoothLeService.enableTXNotification();
-                        //Log.d("Abel","response_3 not received");
-                    }
-                    if (BluetoothLeService.cont3 == 1) {
+                /*if(mConnected){
 
+
+                    if (BluetoothLeService.cont3 == 1) {
                         mBluetoothLeService.disconnect();
+                        finishViewReq.setVisibility(View.INVISIBLE);
+                        finishView.setVisibility(View.VISIBLE);
+                        /*EndLoanTask endLoanTask = new EndLoanTask();
+                        endLoanTask.execute();*/
+
                         //finishLoanOnDB();
 
 
 
                     /*Intent prestamoFinalizado = new Intent(PrestamoActivo.this, PrestamoFinalizado.class);
-                    startActivity(prestamoFinalizado);*/
+                    startActivity(prestamoFinalizado);
                         //
                     }
                 }
@@ -144,7 +137,7 @@ public class LoanFinished extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 //mBluetoothLeService.enableTXNotification();
-                while (true) {
+                /*while (true) {
                     boolean tryWrite = false;
                     byte[] value = new byte[]{67, 108, 111, 115, 101, 71, 97, 83, 69, 83, 76, 97, 98, 33};
                     tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
@@ -167,6 +160,8 @@ public class LoanFinished extends AppCompatActivity{
 
 
                 }*/
+                WriteThread writeThread = new WriteThread();
+                writeThread.execute();
             }
         });
 
@@ -214,6 +209,7 @@ public class LoanFinished extends AppCompatActivity{
     private class EndLoanTask extends AsyncTask<Void, Integer, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
+
             finishLoanOnDB();
             return null;
         }
@@ -223,8 +219,52 @@ public class LoanFinished extends AppCompatActivity{
             //super.onPostExecute(aVoid);
             finishViewReq.setVisibility(View.INVISIBLE);
             finishView.setVisibility(View.VISIBLE);
-            finish();
+
+            //finish();
+
             Log.d("Sarah", "Salí de aquí ");
+        }
+    }
+
+    private class  WriteThread extends AsyncTask<Void,Integer,Void>{
+        @Override
+        protected Void doInBackground(Void... voids) {
+            while (true) {
+                boolean tryWrite = false;
+                byte[] value = new byte[]{67, 108, 111, 115, 101, 71, 97, 83, 69, 83, 76, 97, 98, 33};
+                tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
+                if (tryWrite) {
+                    break;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            WaitAnswerThread waitAnswerThread = new WaitAnswerThread();
+            waitAnswerThread.execute();
+        }
+    }
+
+    private class WaitAnswerThread extends AsyncTask<Void,Integer,Void>{
+        @Override
+        protected Void doInBackground(Void... voids) {
+            while (BluetoothLeService.cont3 == 0) {
+                Log.d("Abel", "cont2 = " + BluetoothLeService.cont2);
+                mBluetoothLeService.enableTXNotification();
+                //Log.d("Abel","response_3 not received");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            mBluetoothLeService.disconnect();
+            finishLoanOnDB();
+
         }
     }
 }
