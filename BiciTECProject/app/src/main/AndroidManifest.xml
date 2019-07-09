@@ -26,7 +26,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".WriteCode"></activity>
+        <activity android:name=".LoanExpired"></activity>
+        <activity android:name=".WriteCode" />
         <activity android:name=".BtScanner" />
         <activity android:name=".QrScannerFinish" />
         <activity android:name=".Home" />

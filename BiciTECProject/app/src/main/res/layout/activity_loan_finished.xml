@@ -8,74 +8,100 @@
 
     <RelativeLayout
         android:id="@+id/finishView"
-        android:layout_width="300dp"
-        android:layout_height="400dp"
+        android:layout_width="320dp"
+        android:layout_height="500dp"
         android:layout_centerInParent="true"
         android:alpha="0.93"
         android:background="#FFFF"
         android:elevation="8dp"
         android:visibility="invisible">
-        
+
+
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="260dp"
-            android:layout_height="305dp"
+            android:layout_width="254dp"
+            android:layout_height="274dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="31dp"
             app:srcCompat="@drawable/ic_circulo_bici_entregada" />
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="216dp"
-            android:layout_height="46dp"
+            android:layout_width="187dp"
+            android:layout_height="31dp"
             android:layout_alignEnd="@+id/imageView2"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="62dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="23dp"
+            android:layout_marginBottom="162dp"
             android:fontFamily="@font/open_sans"
-            android:text="Ayudaste a reducir"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="224dp"
-            android:layout_height="wrap_content"
-
-            android:layout_alignEnd="@+id/imageView2"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="3dp"
-            android:fontFamily="@font/open_sans"
-            android:text="de emisiones al ambiente"
-            android:textSize="18sp" />
+            android:text="Ayudaste a reducir."
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/imageView4"
-            android:layout_width="37dp"
-            android:layout_height="89dp"
+            android:layout_width="44dp"
+            android:layout_height="53dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="21dp"
             android:layout_marginEnd="12dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="97dp"
             android:layout_toStartOf="@+id/txtDistancia"
             android:background="@drawable/ic_huella" />
 
-        <EditText
+        <ImageView
+            android:layout_width="281dp"
+            android:layout_height="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="339dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/ic_horizontar_vector" />
+
+        <ImageView
+            android:layout_width="281dp"
+            android:layout_height="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="413dp"
+            android:layout_marginEnd="21dp"
+            android:background="@drawable/ic_horizontar_vector" />
+
+        <TextView
             android:id="@+id/editText"
-            android:layout_width="129dp"
+            android:layout_width="106dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="67dp"
-            android:layout_marginBottom="22dp"
+            android:layout_marginEnd="127dp"
+            android:layout_marginBottom="100dp"
             android:background="#00000000"
             android:ems="10"
-            android:inputType="textPersonName"
             android:text="200 g"
             android:textColor="#00A89E"
-            android:textSize="45sp" />
+            android:textSize="35sp" />
+
+        <Button
+            android:id="@+id/btnAccept"
+            android:layout_width="147dp"
+            android:layout_height="37dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="97dp"
+            android:layout_marginTop="443dp"
+            android:background="@drawable/ic_accept_bl_but" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="76dp"
+            android:layout_height="27dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="210dp"
+            android:layout_marginTop="365dp"
+            app:srcCompat="@drawable/ic_co2" />
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/finishViewReq"
