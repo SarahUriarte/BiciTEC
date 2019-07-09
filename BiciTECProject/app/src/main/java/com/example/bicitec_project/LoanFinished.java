@@ -18,8 +18,13 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.bicitec_project.Classes.TimeResponse;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoanFinished extends AppCompatActivity{
     /*UI Elements*/
@@ -180,15 +185,16 @@ public class LoanFinished extends AppCompatActivity{
     }
 
 
-    private void finishLoanOnDB(){
+    private void finishLoanOnDB(String time){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Historial").child(LoanConfirmed.getLoanKey());
-        DatabaseReference myUserRef = database.getReference("User").child(LogIn.getUs().getUserName()).child(LoanConfirmed.getUserLoanKey());
+        DatabaseReference myUserRef = database.getReference("User").child(LogIn.getUs().getUserName());
         DatabaseReference myBiciRef = database.getReference("Bicycle").child(mDeviceAddress);
         myRef.child("estado").setValue("Terminado");
-        myUserRef.child("loanState").setValue("Terminado");
+        myRef.child("horaFin").setValue(time);
+        myUserRef.child(LoanConfirmed.getLoanKey()).child("loanState").setValue("Terminado");
+        myUserRef.child("PrestamoActivo").setValue("");
         myBiciRef.child("state").setValue("available");
-
     }
 
     @Override
@@ -210,7 +216,7 @@ public class LoanFinished extends AppCompatActivity{
         @Override
         protected Void doInBackground(Void... voids) {
 
-            finishLoanOnDB();
+            //finishLoanOnDB();
             return null;
         }
 
@@ -263,8 +269,26 @@ public class LoanFinished extends AppCompatActivity{
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mBluetoothLeService.disconnect();
-            finishLoanOnDB();
+            getTime();
 
         }
+    }
+    private void getTime(){
+        Call<TimeResponse> call = LogIn.getApi().time(LogIn.getUs().getUserName());
+        call.enqueue(new Callback<TimeResponse>() {
+            @Override
+            public void onResponse(Call<TimeResponse> call, Response<TimeResponse> response) {
+                if(response.code() == 200){
+                    TimeResponse time = response.body();
+                    String[] date = time.getServer_time().split(" ");
+                    String hour = date[1];
+                    finishLoanOnDB(hour);
+                }
+            }
+            @Override
+            public void onFailure(Call<TimeResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),"Fallé",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

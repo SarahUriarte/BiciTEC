@@ -70,7 +70,10 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         /*************************************************/
-        mHandler = new Handler();
+        intructionsPopUp = new Dialog(this);
+        readingErrorPopUp = new Dialog(this);
+        showInstructionsPopUp();
+        //mHandler = new Handler();
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -104,8 +107,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
         }else{
 
         }
-        intructionsPopUp = new Dialog(this);
-        readingErrorPopUp = new Dialog(this);
+
     }
 
     private boolean checkPermission() {
@@ -144,7 +146,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
     @Override
     public void onResume() {
         super.onResume();
-        showInstructionsPopUp();
+
         // Initializes list view adapter.
         //mLeDeviceListAdapter = new DeviceScanActivity.LeDeviceListAdapter();
         //setListAdapter(mLeDeviceListAdapter);

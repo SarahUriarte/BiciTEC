@@ -30,6 +30,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bicitec_project.Classes.LogInResponse;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ActiveLoan extends AppCompatActivity implements LocationListener {
 
 
@@ -38,7 +44,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     private TextView txtTimerFinishing;
     private TextView txtDistance;
     private int distance = 0;
-    long loanTime = 1800000;//1800000; //Estos deben ser 25 minutos
+    long loanTime; //= 1800000;//1800000; //Estos deben ser 25 minutos
     private Button cerrarCandado;
     private RelativeLayout activeLoan;
     private RelativeLayout activeLoanFinishing;
@@ -79,92 +85,35 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
         }
     };
 
-   /* private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                mConnected = true;
-                //updateConnectionState(R.string.connected);
-
-                Toast.makeText(getApplicationContext(), "Conectado", Toast.LENGTH_SHORT).show();
-                invalidateOptionsMenu();
-                Log.d("BroadcastReceiver", "Esta conectado");
-            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                mConnected = false;
-                //updateConnectionState(R.string.disconnected);
-                Toast.makeText(getApplicationContext(), "Desconectado", Toast.LENGTH_SHORT).show();
-                invalidateOptionsMenu();
-                //clearUI();
-                Log.d("BroadcastReceiver", "No esta conectado");
-            } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                // Show all the supported services and characteristics on the user interface.
-
-                /**** ABEL **
-                //Paso 2.2 Conectarse a la device address del Adafruit Bluefruit LE (Se acaba de hacer aquí)
-                // y esperar la confirmación (Se debe realizar un ciclo para esperar la respuesta)
-
-
-                if (BluetoothLeService.cont3 == 1) {
-                    Log.d("Sarah", "Intentó conectar");
-                    //btnConfirmado = (Button) findViewById(R.id.confirmadoBtn);
-                    //btnConfirmado.setVisibility(View.VISIBLE);
-                    //crearInstanciaFirebase("Prestada");
-                    //Intent prestamoActivo = new Intent(DeviceControlActivity.this,PrestamoActivo.class);
-                    //startActivity(prestamoActivo);
-
-                }
-                /***ABEL END
-            }
-
-        }
-    };*/
 
     @Override
     protected void onPause() {
         super.onPause();
-        //unregisterReceiver(mGattUpdateReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        /*unbindService(mServiceConnection);
-        mBluetoothLeService = null;*/
     }
 
-
-    /*private static IntentFilter makeGattUpdateIntentFilter() {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
-        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
-        return intentFilter;
-    }*/
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_loan);
-        // Use this check to determine whether BLE is supported on the device.  Then you can
-        // selectively disable BLE-related features.
-        /*if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(this, "DEvice not supported", Toast.LENGTH_SHORT).show();
-            finish();
-        }*/
-
-        // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
-        // BluetoothAdapter through BluetoothManager.
-        /*final BluetoothManager bluetoothManager =
-                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();*/
 
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+        loanTime = intent.getLongExtra("LongTime",0);
 
+        if(loanTime == 0){
+            loanTime = 1800000;
+        }
+        else {
+            loanTime = 1800000 - loanTime;
+        }
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
@@ -214,21 +163,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     protected void onResume() {
         super.onResume();
         Log.w("Sarah","Entré al onResume");
-        //registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-        /*try {
-            int gpsSignal  = Settings.Secure.getInt(getContentResolver(),Settings.Secure.LOCATION_MODE);
-            if(gpsSignal == 0){
-
-                //El gps está desactivado
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-        }*/
-        /*if(statusCheck()){
-
-        }*/
+        sendEmail();
         startTimer();
     }
     public boolean statusCheck() {
@@ -331,8 +266,8 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
                     /*Intent prestamoFinalizado = new Intent(PrestamoActivo.this, PrestamoFinalizado.class);
                     startActivity(prestamoFinalizado);*/
             }
-            loanFinished.putExtra(ActiveLoan.EXTRAS_DEVICE_NAME, mDeviceName);
-            loanFinished.putExtra(ActiveLoan.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
+            //loanFinished.putExtra(ActiveLoan.EXTRAS_DEVICE_NAME, mDeviceName);
+            //loanFinished.putExtra(ActiveLoan.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
             startActivity(loanFinished);
 
         }
@@ -394,5 +329,36 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     @Override
     public void onProviderDisabled(String s) {
 
+    }
+
+    private void sendEmail(){
+        /*Call<String>call = LogIn.getApi().sendMail("2017103300","uri.arte08@gmail.com",
+                                                    "Prestamo","Este usuario tiene un préstamo activo");
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.code() == 200){
+                    Toast.makeText(getApplicationContext(),"Correo enviado",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"Correo no enviado por extrañas razones",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),"Fallo automático",Toast.LENGTH_SHORT).show();
+            }
+        });*/
+        /*Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"uri.arte08@gmail.com"});
+        i.putExtra(Intent.EXTRA_SUBJECT, "Prestamo");
+        i.putExtra(Intent.EXTRA_TEXT   , "Este usuario tiene un préstamo activo");
+        try {
+            startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(ActiveLoan.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }*/
     }
 }

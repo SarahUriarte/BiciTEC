@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.example.bicitec_project.Classes.LogInResponse;
 import com.example.bicitec_project.Classes.Record;
+import com.example.bicitec_project.Classes.TimeResponse;
 import com.example.bicitec_project.Classes.TimerRequest;
 import com.example.bicitec_project.Classes.UserLoan;
 import com.example.bicitec_project.api.Api;
@@ -193,24 +194,43 @@ public class LoanConfirmed extends AppCompatActivity {
     }
 
     //Método para insertar en firebase
-    public void crearInstanciaFirebase(){
+    public void crearInstanciaFirebase(String time){
         DatabaseReference myRef = database.getReference("Historial");
         DatabaseReference myBicycleRef = database.getReference("Bicycle").child(mDeviceAddress).child("state");
-        Record record = new Record(LogIn.getUs().getUserName(),0,0,0,0,mDeviceAddress,"En curso");
+        Record record = new Record(LogIn.getUs().getUserName(),time,"",0,0,mDeviceAddress,"En curso");
         loanKey = myRef.push().getKey();
         myRef.child(loanKey).setValue(record);
         //requesTimer(key,1);
         myBicycleRef.setValue("not available");
     }
-    public void saveUserLoan(){
+    public void saveUserLoan(String date){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("User").child(LogIn.getUs().getUserName());
         //myRef.push().setValue()
-        UserLoan userLoan = new UserLoan(mDeviceAddress,(String)getDateTime(),0,0,"En curso");
-        userLoanKey = myRef.push().getKey();
-        myRef.child(userLoanKey).setValue(userLoan);
+        UserLoan userLoan = new UserLoan(mDeviceAddress,date,0,0,"En curso");
+        //userLoanKey = myRef.push().getKey();
+        myRef.child("PrestamoActivo").setValue(loanKey);
+        myRef.child(loanKey).setValue(userLoan);
     }
-
+    private void getTime(){
+        Call<TimeResponse>call = LogIn.getApi().time(LogIn.getUs().getUserName());
+        call.enqueue(new Callback<TimeResponse>() {
+            @Override
+            public void onResponse(Call<TimeResponse> call, Response<TimeResponse> response) {
+                if(response.code() == 200){
+                    TimeResponse time = response.body();
+                    String[] date = time.getServer_time().split(" ");
+                    String hour = date[1];
+                    crearInstanciaFirebase(time.getServer_time());
+                    saveUserLoan(time.getServer_time());
+                }
+            }
+            @Override
+            public void onFailure(Call<TimeResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),"Fallé",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     private String getDateTime() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
@@ -335,12 +355,22 @@ public class LoanConfirmed extends AppCompatActivity {
     public static String getUserLoanKey() {
         return userLoanKey;
     }
+
+    public static void setLoanKey(String loanKey) {
+        LoanConfirmed.loanKey = loanKey;
+    }
+
+    public static void setUserLoanKey(String userLoanKey) {
+        LoanConfirmed.userLoanKey = userLoanKey;
+    }
+
     private class ActiveLoanTask extends AsyncTask<Void, Integer, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            crearInstanciaFirebase();
-            saveUserLoan();
+            //crearInstanciaFirebase();
+            getTime();
+            //saveUserLoan();
             return null;
         }
 
