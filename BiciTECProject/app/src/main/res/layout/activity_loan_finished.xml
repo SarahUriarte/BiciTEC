@@ -15,8 +15,7 @@
         android:background="#FFFF"
         android:elevation="8dp"
         android:visibility="invisible">
-
-
+        
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="260dp"

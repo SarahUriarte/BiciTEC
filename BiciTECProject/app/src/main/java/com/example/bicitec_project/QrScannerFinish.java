@@ -1,6 +1,7 @@
 package com.example.bicitec_project;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +12,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,8 +30,10 @@ public class QrScannerFinish extends AppCompatActivity implements ZXingScannerVi
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView scannerView;
     private FirebaseAuth mAuth;
-    private String mDeviceAddress;
+    private static String mDeviceAddress;
     private String mDeviceName;
+    Dialog readingErrorPopUp;
+    private static boolean verifyActivity = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +44,7 @@ public class QrScannerFinish extends AppCompatActivity implements ZXingScannerVi
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra("DeviceName");
         mDeviceAddress = intent.getStringExtra("DeviceAdress");
+        readingErrorPopUp = new Dialog(this);
         int currentApiVersion = Build.VERSION.SDK_INT;
 
         if (currentApiVersion >= Build.VERSION_CODES.M) {
@@ -127,6 +133,7 @@ public class QrScannerFinish extends AppCompatActivity implements ZXingScannerVi
     }
     @Override
     public void handleResult(Result result) {
+        scannerView.stopCamera();
         final String myResult = result.getText();
         Log.d("QRCodeScanner", result.getText());
         Log.d("QRCodeScanner", result.getBarcodeFormat().toString());
@@ -140,8 +147,39 @@ public class QrScannerFinish extends AppCompatActivity implements ZXingScannerVi
             startActivity(loanFinished);
         }
         else{
-            Toast.makeText(getApplicationContext(),"Esta no es la bicicleta que usted tiene en préstamo",Toast.LENGTH_SHORT).show();
+            showErrorReadingPopUp();
         }
 
+    }
+    public void showErrorReadingPopUp(){
+        Button retry;
+        Button digitCode;
+        readingErrorPopUp.setContentView(R.layout.reading_error_pop_up);
+        retry = (Button) readingErrorPopUp.findViewById(R.id.btnreTry);
+        digitCode = (Button)readingErrorPopUp.findViewById(R.id.btnDigit);
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readingErrorPopUp.dismiss();
+                scannerView.startCamera();
+            }
+        });
+        digitCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                verifyActivity = true;
+                Intent writeCode = new Intent(QrScannerFinish.this,WriteCode.class);
+                startActivity(writeCode);
+            }
+        });
+        readingErrorPopUp.show();
+    }
+
+    public static boolean isVerifyActivity() {
+        return verifyActivity;
+    }
+
+    public static String getmDeviceAddress() {
+        return mDeviceAddress;
     }
 }

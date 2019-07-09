@@ -254,6 +254,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
 
     @Override
     public void handleResult(Result result) {
+        scannerView.stopCamera();
         final String myResult = result.getText();
         Log.d("QRCodeScanner", result.getText());
         Log.d("QRCodeScanner", result.getBarcodeFormat().toString());
@@ -308,12 +309,14 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
             @Override
             public void onClick(View v) {
                 readingErrorPopUp.dismiss();
+                scannerView.startCamera();
             }
         });
         digitCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent writeCode = new Intent(QrScanner.this,WriteCode.class);
+                startActivity(writeCode);
             }
         });
         readingErrorPopUp.show();

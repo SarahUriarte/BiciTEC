@@ -159,10 +159,8 @@ public class LogIn extends AppCompatActivity {
                     hoursDifference.execute(params);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
         return true;
