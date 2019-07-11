@@ -1,6 +1,7 @@
 package com.example.bicitec_project;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
@@ -51,6 +52,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     private Button btnFinish;
 
     private static final int PERMISSION_READ_STATE_LOCATION = 1;
+    private static final int REQUEST_ENABLE_BT = 1;
     private LocationManager locationManager;
     /*Services variables*/
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
@@ -60,6 +62,9 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     private BluetoothLeService mBluetoothLeService = LoanConfirmed.getBluethothLeService();
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mConnected = false;
+
+    //Pop ups
+    Dialog confirmFinish;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -102,7 +107,14 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_loan);
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
 
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
@@ -116,44 +128,19 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
         }
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
+        confirmFinish = new Dialog(this);
         txtTimer = (TextView) findViewById(R.id.txtTimer);
         txtTimerFinishing = (TextView) findViewById(R.id.txtTimer2);
         txtDistance = (TextView)findViewById(R.id.txtDistance);
 
         cerrarCandado = (Button) findViewById(R.id.btnCerrarCandado);
-        /*cerrarCandado.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                while (true) {
-                    boolean tryWrite = false;
-                    byte[] value = new byte[]{67, 108, 111, 115, 101, 71, 97, 83, 69, 83, 76, 97, 98, 33};
-                    tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
-                    if (tryWrite) {
-                        break;
-                    }
-                }
-                while (BluetoothLeService.cont3 == 0) {
-                    Log.d("Abel", "cont2 = " + BluetoothLeService.cont2);
-                    mBluetoothLeService.enableTXNotification();
-                    //Log.d("Abel","response_3 not received");
-                }
-                if (BluetoothLeService.cont3 == 1) {
-                    Toast.makeText(getApplicationContext(), "Devuelta", Toast.LENGTH_SHORT);
-                    mBluetoothLeService.disconnect();
-                    /*Intent prestamoFinalizado = new Intent(PrestamoActivo.this, PrestamoFinalizado.class);
-                    startActivity(prestamoFinalizado);
-                }
-            }
-        });*/
+
+
         btnFinish = (Button) findViewById(R.id.btnFinishLoan);
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent finishLoan = new Intent(ActiveLoan.this,QrScannerFinish.class);
-                finishLoan.putExtra("DeviceName",mDeviceName);
-                finishLoan.putExtra("DeviceAdress",mDeviceAddress);
-                startActivity(finishLoan);
+                showConfirmFinishPopUp();
             }
         });
 
@@ -243,10 +230,10 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
             activeLoan.setVisibility(View.INVISIBLE);
             activeLoanFinishing.setVisibility(View.VISIBLE);
         }
-        if (minutes == 0 && seconds == 1) {
+        if (minutes == 28 && seconds == 1) {
             //stopTimer();
             Toast.makeText(getApplicationContext(), "Time over", Toast.LENGTH_SHORT).show();
-            Intent loanFinished = new Intent(ActiveLoan.this, LoanFinished.class);
+            /*Intent loanFinished = new Intent(ActiveLoan.this, LoanFinished.class);
             while (true) {
                 boolean tryWrite = false;
                 byte[] value = new byte[]{67, 108, 111, 115, 101, 71, 97, 83, 69, 83, 76, 97, 98, 33};
@@ -264,11 +251,12 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
                 Toast.makeText(getApplicationContext(), "Devuelta", Toast.LENGTH_SHORT);
                 mBluetoothLeService.disconnect();
                     /*Intent prestamoFinalizado = new Intent(PrestamoActivo.this, PrestamoFinalizado.class);
-                    startActivity(prestamoFinalizado);*/
-            }
+                    startActivity(prestamoFinalizado);
+            }*/
             //loanFinished.putExtra(ActiveLoan.EXTRAS_DEVICE_NAME, mDeviceName);
             //loanFinished.putExtra(ActiveLoan.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
-            startActivity(loanFinished);
+            Intent loanExpired = new Intent(ActiveLoan.this,LoanExpired.class);
+            startActivity(loanExpired);
 
         }
 
@@ -360,5 +348,29 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(ActiveLoan.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }*/
+    }
+    private void showConfirmFinishPopUp(){
+        Button accept;
+        Button cancel;
+        confirmFinish.setContentView(R.layout.loan_finished_pop_up);
+
+        accept = (Button)confirmFinish.findViewById(R.id.btnAcceptPopUp);
+        cancel = (Button)confirmFinish.findViewById(R.id.btnCancelPopUp);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmFinish.dismiss();
+            }
+        });
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent finishLoan = new Intent(ActiveLoan.this,QrScannerFinish.class);
+                finishLoan.putExtra("DeviceName",mDeviceName);
+                finishLoan.putExtra("DeviceAdress",mDeviceAddress);
+                startActivity(finishLoan);
+            }
+        });
+        confirmFinish.show();
     }
 }

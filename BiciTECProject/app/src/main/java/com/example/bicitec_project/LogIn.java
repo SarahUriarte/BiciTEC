@@ -1,6 +1,9 @@
 package com.example.bicitec_project;
 
 import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -63,11 +66,22 @@ public class LogIn extends AppCompatActivity {
 
     private String mDeviceAddress;
 
+    //to turn on the BT
+    private static final int REQUEST_ENABLE_BT = 1;
+    private BluetoothAdapter mBluetoothAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
 
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
         mAuth = FirebaseAuth.getInstance();
 
 
@@ -261,13 +275,27 @@ public class LogIn extends AppCompatActivity {
                 int seconds = (int) (integer / 1000) % 60;
                 int minutes = (int) ((integer / (1000 * 60)) % 60);
                 int hours = (int) ((integer / (1000 * 60 * 60)) % 24);
-                if(hours == 0){
+
+                if(hours == 0 && minutes <= 2){
                     Intent activeLoan = new Intent(LogIn.this,ActiveLoan.class);
                     activeLoan.putExtra("LongTime",(long)integer);
                     activeLoan.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, "asd");
                     activeLoan.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,mDeviceAddress);
                     startActivity(activeLoan);
                 }
+               else{
+                    Intent loanExpired = new Intent(LogIn.this,LoanExpired.class);
+                    loanExpired.putExtra("LongTime",(long)integer);
+                    loanExpired.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,mDeviceAddress);
+                    startActivity(loanExpired);
+                }
+                /*if(hours > 0){
+                    Intent stolenBici = new Intent(LogIn.this,StolenBicycle.class);
+                    //stolenBici.putExtra("LongTime",(long)integer);
+                    //stolenBici.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,mDeviceAddress);
+                    startActivity(stolenBici);
+                }*/
+
             }
         }
     }

@@ -38,58 +38,61 @@
     <RelativeLayout
         android:id="@+id/finishView"
         android:layout_width="300dp"
-        android:layout_height="350dp"
+        android:layout_height="300dp"
         android:layout_centerInParent="true"
         android:alpha="0.93"
         android:background="#FFFF"
         android:elevation="8dp"
         android:visibility="invisible">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+            <ImageView
+                android:id="@+id/img_bici_logo"
+                android:layout_width="61dp"
+                android:layout_height="71dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="21dp"
+                android:src="@drawable/ic_logo_bici_blk" />
+            <TextView
+                android:id="@+id/txt_finish"
+                android:layout_width="180dp"
+                android:layout_height="85dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/img_bici_logo"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/ic_confirmar_prestamo" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="249dp"
-            android:layout_height="108dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="101dp"
-            android:fontFamily="@font/open_sans"
-            android:text="¿Desea activar el préstamo ahora?"
-            android:textSize="30sp" />
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="94dp"
+                android:layout_height="29dp"
+                android:layout_below="@+id/txt_finish"
+                android:layout_marginTop="25dp"
+                android:layout_marginLeft="50dp"
+                android:background="#000000"
+                android:fontFamily="@font/open_sans"
+                android:text="Cancelar"
+                android:textColor="#ffff" />
 
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="94dp"
-            android:layout_height="29dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="25dp"
-            android:layout_marginBottom="40dp"
-            android:background="#000000"
-            android:fontFamily="@font/open_sans"
-            android:text="Cancelar"
-            android:textColor="#ffff" />
+            <Button
+                android:id="@+id/btnAccept"
+                android:layout_width="94dp"
+                android:layout_height="29dp"
+                android:layout_below="@+id/txt_finish"
+                android:layout_marginTop="25dp"
+                android:layout_marginLeft="190dp"
+                android:background="#00A89E"
+                android:fontFamily="@font/open_sans"
+                android:text="Aceptar"
+                android:textColor="#ffff" />
+        </RelativeLayout>
 
-        <Button
-            android:id="@+id/btnAccept"
-            android:layout_width="94dp"
-            android:layout_height="29dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="180dp"
-            android:layout_marginBottom="40dp"
-            android:background="#00A89E"
-            android:fontFamily="@font/open_sans"
-            android:text="Aceptar"
-            android:textColor="#ffff" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="61dp"
-            android:layout_height="71dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="21dp"
-            android:src="@drawable/bici_logo" />
+
 
     </RelativeLayout>
 

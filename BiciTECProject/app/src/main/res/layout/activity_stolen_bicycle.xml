@@ -7,9 +7,9 @@
     tools:context="com.example.bicitec_project.LoanExpired">
 
     <RelativeLayout
-        android:id="@+id/finishViewReq"
+        android:id="@+id/stolenView"
         android:layout_width="330dp"
-        android:layout_height="600dp"
+        android:layout_height="500dp"
         android:layout_centerInParent="true"
         android:alpha="0.93"
         android:background="#FFFF"
@@ -19,30 +19,46 @@
         <RelativeLayout
             android:id="@+id/icon_circle_layout"
             android:layout_width="match_parent"
-            android:layout_height="300dp">
+            android:layout_height="200dp">
 
             <ImageView
-                android:id="@+id/img_circle_expired"
-                android:layout_width="265dp"
-                android:layout_height="266dp"
+                android:id="@+id/img_bici"
+                android:layout_width="95dp"
+                android:layout_height="105dp"
                 android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/ic_prestamo_expiro" />
+                android:layout_marginTop="15dp"
+                android:background="@drawable/ic_logo_bici_blk" />
+            <ImageView
+                android:id="@+id/img_circle_block"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/ic_block_red" />
+            <ImageView
+                android:id="@+id/img_stolen_txt"
+                android:layout_width="130dp"
+                android:layout_height="50dp"
+                android:layout_below="@+id/img_bici"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/ic_robo" />
         </RelativeLayout>
 
 
         <ImageView
-            android:id="@+id/img_text_exp"
-            android:layout_width="248dp"
-            android:layout_height="50dp"
+            android:id="@+id/img_reporte_robo"
+            android:layout_width="236dp"
+            android:layout_height="57dp"
             android:layout_below="@+id/icon_circle_layout"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/ic_estacion_cercana" />
+            android:layout_marginTop="13dp"
+            android:background="@drawable/robo" />
 
         <ImageView
             android:id="@+id/line1"
             android:layout_width="62dp"
-            android:layout_height="57dp"
+            android:layout_height="70dp"
             android:layout_below="@+id/icon_circle_layout"
             android:layout_toStartOf="@+id/txtDistancia"
             android:background="@drawable/ic_line_vector" />
@@ -50,46 +66,38 @@
         <ImageView
             android:id="@+id/line2"
             android:layout_width="60dp"
-            android:layout_height="57dp"
+            android:layout_height="70dp"
             android:layout_below="@+id/icon_circle_layout"
             android:layout_marginHorizontal="290dp"
             android:background="@drawable/ic_line_vector" />
 
 
-        <Button
-            android:id="@+id/btnFinishL"
-            android:layout_width="187dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/img_text_exp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/ic_boton_finalizar" />
 
         <ImageView
-            android:id="@+id/ic_blocked"
-            android:layout_width="55dp"
+            android:id="@+id/ic_colon"
+            android:layout_width="35dp"
             android:layout_height="55dp"
-            android:layout_below="@+id/btnFinishL"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="17dp"
-            android:background="@drawable/ic_blocked" />
+            android:layout_below="@+id/img_reporte_robo"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/ic_colon" />
 
         <ImageView
-            android:id="@+id/img_text_block"
+            android:id="@+id/img_text_pay"
             android:layout_width="223dp"
-            android:layout_height="63dp"
-            android:layout_below="@+id/btnFinishL"
-            android:layout_marginLeft="85dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/ic_cuenta_bloqueada" />
+            android:layout_height="40dp"
+            android:layout_below="@+id/img_reporte_robo"
+            android:layout_marginLeft="75dp"
+            android:layout_marginTop="43dp"
+            android:background="@drawable/ic_txt_cancelar_costo" />
 
         <ImageView
             android:id="@+id/img_text_mas_info"
             android:layout_width="223dp"
             android:layout_height="63dp"
-            android:layout_below="@+id/img_text_block"
+            android:layout_below="@+id/ic_colon"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/ic_mas_info" />
 
 
