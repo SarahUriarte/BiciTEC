@@ -104,9 +104,11 @@ public class LogIn extends AppCompatActivity {
         btnEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String usr = txtUser.getText().toString();
+                /*String usr = txtUser.getText().toString();
                 String pasw = txtPassword.getText().toString();
-                existingUser(usr,pasw);
+                existingUser(usr,pasw);*/
+                Intent home = new Intent(LogIn.this,Home.class);
+                startActivity(home);
             }
         });
         forgotCredential.setOnClickListener(new View.OnClickListener() {
@@ -191,6 +193,7 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 incorrectUsrPopUp.dismiss();
+
             }
         });
         incorrectUsrPopUp.show();

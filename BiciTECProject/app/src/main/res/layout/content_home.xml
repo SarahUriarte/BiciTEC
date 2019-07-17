@@ -1,8 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainContent"
+    tools:showIn="@layout/app_bar_home"
+    >
 
-    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="675dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/bg_home">
+
+        <TextView
+            android:id="@+id/txt_adonde"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/ic_txt_adondevamos" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="123dp"
+            android:layout_below="@+id/txt_adonde"
+            android:layout_marginTop="345dp">
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="25dp"
+                android:background="@drawable/ic_logo_gasel" />
+
+            <ImageView
+                android:id="@+id/img_logo"
+                android:layout_width="180dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="170dp"
+                android:background="@drawable/logo_bici_tec" />
+        </RelativeLayout>
+    </RelativeLayout>
+
 
 </RelativeLayout>

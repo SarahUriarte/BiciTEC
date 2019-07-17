@@ -4,7 +4,7 @@
         <item
             android:id="@+id/menu_alquilar_bicicleta"
             android:icon="@drawable/ic_icon_logo_bicitec_menu"
-            android:title="AlquilarBicicleta"
+            android:title="@string/alquilar_bicicleta"
 
             />
         <item
@@ -13,10 +13,34 @@
             android:title="ReportarBicicleta"
             />
         <item
+            android:id="@+id/menu_mi_usuario"
+            android:icon="@drawable/ic_mi_usuario"
+            android:title="MiUsuario"/>
+        <item
+            android:id="@+id/menu_sugerencias"
+            android:icon="@drawable/ic_sugerencias"
+            android:title="Sugerenecias"/>
+        <item
+            android:id="@+id/menu_sobre_bici_tec"
+            android:icon="@drawable/ic_info"
+            android:title="SobrebiciTEC"/>
+        <item
+            android:id="@+id/menu_terminos_condiciones"
+            android:icon="@drawable/ic_terminos_condiciones"
+            android:title="Términos y Condiciones"/>
+        <item
+            android:id="@+id/menu_llamada_emergencia"
+            android:icon="@drawable/ic_llamada_emergencia"
+            android:title="Llamada emergencia"/>
+
+        <item
             android:id="@+id/menu_salir"
             android:icon="@drawable/ic_icon_salir_menu"
             android:title="ReportarBicicleta"
             android:background = "#000"
             />
+    </group>
+    <group >
+
     </group>
 </menu>
