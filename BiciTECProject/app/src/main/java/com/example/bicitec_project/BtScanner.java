@@ -47,8 +47,10 @@ public class BtScanner extends AppCompatActivity {
     /*----------- Adress and Feather Name ------------------------*/
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+    public static final String EXTRAS_STATION = "STATION";
     private String mDeviceAddress;
     private String mDeviceName;
+    private int estacionSalida;
     /*------------------------------------------------------------*/
     private Button btnAdress;
     private Button btnAccept;
@@ -66,6 +68,8 @@ public class BtScanner extends AppCompatActivity {
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+        estacionSalida = intent.getIntExtra(EXTRAS_STATION,0);
+
         layoutCofirm = (RelativeLayout) findViewById(R.id.finishView);
         layoutLoading = (RelativeLayout)findViewById(R.id.progressView);
         btnAdress = (Button)findViewById(R.id.button2);
@@ -85,7 +89,7 @@ public class BtScanner extends AppCompatActivity {
                 Intent loanConfirmed = new Intent(BtScanner.this,LoanConfirmed.class);
                 loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, mDeviceName);
                 loanConfirmed.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS, btnAdress.getText());
-
+                loanConfirmed.putExtra(LoanConfirmed.EXTRAS_STATION,estacionSalida);
                 //mLEScanner.stopScan(mScanCallback);
 
                 if (mScanning) {
@@ -240,6 +244,7 @@ public class BtScanner extends AppCompatActivity {
                         if(btDevice.getAddress().equals(mDeviceAddress)){
                             btnAdress.setText(btDevice.getAddress());
                             layoutLoading.setVisibility(View.INVISIBLE);
+
                             layoutCofirm.setVisibility(View.VISIBLE);
                         }
                     }

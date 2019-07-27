@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,8 +37,11 @@ import com.example.bicitec_project.Classes.TimeResponse;
 import com.example.bicitec_project.Classes.TimerRequest;
 import com.example.bicitec_project.Classes.UserLoan;
 import com.example.bicitec_project.api.Api;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -54,6 +58,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LoanConfirmed extends AppCompatActivity {
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+    public static final String EXTRAS_STATION = "STATION";
 
     /*UI Elements*/
     private Button btnAccept;
@@ -65,6 +70,7 @@ public class LoanConfirmed extends AppCompatActivity {
     /*Control variables*/
     private int solicitarBici;
 
+    private int estacionSalida;
     private String mDeviceAddress;
     private String mDeviceName;
     private static String loanKey;
@@ -79,8 +85,10 @@ public class LoanConfirmed extends AppCompatActivity {
     private Api api; //This is the call to the api
     private String base_url = "http://localhost:3000/api/";
 
+    //For firebase
     FirebaseDatabase database;
-
+    DatabaseReference myStationRef;
+    ValueEventListener postListener;
     /*----------------------------------------------------------*/
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
@@ -195,16 +203,16 @@ public class LoanConfirmed extends AppCompatActivity {
 
     //Método para insertar en firebase
     public void crearInstanciaFirebase(String time){
-        DatabaseReference myRef = database.getReference("Historial");
+        DatabaseReference myRef = database.getReference("Record");
         DatabaseReference myBicycleRef = database.getReference("Bicycle").child(mDeviceAddress).child("state");
-        Record record = new Record(LogIn.getUs().getUserName(),time,"",0,0,mDeviceAddress,"En curso");
+        Record record = new Record(LogIn.getUs().getUserName(),time,"",mDeviceAddress,"","");
         loanKey = myRef.push().getKey();
         myRef.child(loanKey).setValue(record);
         //requesTimer(key,1);
         myBicycleRef.setValue("not available");
+        changeStationSpace();
     }
     public void saveUserLoan(String date){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("User").child(LogIn.getUs().getUserName());
         //myRef.push().setValue()
         UserLoan userLoan = new UserLoan(mDeviceAddress,date,0,0,"En curso");
@@ -248,6 +256,8 @@ public class LoanConfirmed extends AppCompatActivity {
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+        estacionSalida = intent.getIntExtra(EXTRAS_STATION,0);
+
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
         database = FirebaseDatabase.getInstance();
@@ -320,6 +330,7 @@ public class LoanConfirmed extends AppCompatActivity {
         super.onDestroy();
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
+        myStationRef.removeEventListener(postListener);
     }
 
 
@@ -386,4 +397,22 @@ public class LoanConfirmed extends AppCompatActivity {
            // }
         }
     }
+
+    private void changeStationSpace(){
+        myStationRef = database.getReference("Station").child(Integer.toString(estacionSalida)).child("Space");
+        postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int spaces = (int) dataSnapshot.getValue();
+                myStationRef.setValue(spaces+1);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //Falta código para todos los onCancelled
+            }
+        };
+        myStationRef.addValueEventListener(postListener);
+    }
+
 }

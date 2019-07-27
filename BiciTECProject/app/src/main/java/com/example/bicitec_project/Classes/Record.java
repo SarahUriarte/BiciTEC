@@ -6,19 +6,17 @@ public class Record {
     private String user;
     private String horaInicio;
     private String horaFin;
-    private int  cronometro;
-    private int temporizador;
     private String adressFeather;
-    private  String estado;
+    private String estacionSalida;
+    private String estacionLlegada;
 
-    public Record(String user, String horaInicio, String horaFin, int cronometro, int temporizador, String adressFeather, String estado) {
+    public Record(String user, String horaInicio, String horaFin, String adressFeather, String estacionSalida, String estacionLlegada) {
         this.user = user;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
-        this.cronometro = cronometro;
-        this.temporizador = temporizador;
         this.adressFeather = adressFeather;
-        this.estado = estado;
+        this.estacionSalida = estacionSalida;
+        this.estacionLlegada = estacionLlegada;
     }
 
     public String getUser() {
@@ -33,19 +31,15 @@ public class Record {
         return horaFin;
     }
 
-    public int getCronometro() {
-        return cronometro;
-    }
-
-    public int getTemporizador() {
-        return temporizador;
-    }
-
     public String getAdressFeather() {
         return adressFeather;
     }
 
-    public String getEstado() {
-        return estado;
+    public String getEstacionSalida() {
+        return estacionSalida;
+    }
+
+    public String getEstacionLlegada() {
+        return estacionLlegada;
     }
 }

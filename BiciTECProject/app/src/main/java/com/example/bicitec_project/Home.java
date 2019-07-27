@@ -34,7 +34,18 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
-
+        if (id == R.id.menu_sugerencias) {
+            Intent suggestions = new Intent(Home.this,Suggestions.class);
+            startActivity(suggestions);
+            /*Intent statistics1 = new Intent(MainWindow.this, BestStudentsActivity.class);
+            startActivity(statistics1);*/
+        }
+        if (id == R.id.menu_reportar_bicicleta) {
+            Intent suggestions = new Intent(Home.this,ReportBicycle.class);
+            startActivity(suggestions);
+            /*Intent statistics1 = new Intent(MainWindow.this, BestStudentsActivity.class);
+            startActivity(statistics1);*/
+        }
         /*if (id == R.id.nav_home) {
             Intent statistics1 = new Intent(MainWindow.this, BestStudentsActivity.class);
             startActivity(statistics1);

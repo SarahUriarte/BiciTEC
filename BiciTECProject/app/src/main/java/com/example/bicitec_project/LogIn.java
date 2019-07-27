@@ -70,6 +70,9 @@ public class LogIn extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBluetoothAdapter;
 
+    //Database
+    DatabaseReference myUserRef;
+    ValueEventListener postListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +92,7 @@ public class LogIn extends AppCompatActivity {
         txtUser = (TextView) findViewById(R.id.txtUser);
         txtPassword = (TextView)findViewById(R.id.txtPassword);
         btnEnter = (Button)findViewById(R.id.btnEntrar);
-        txtRegister = (TextView)findViewById(R.id.txtRegister);
+        //txtRegister = (TextView)findViewById(R.id.txtRegister);
         forgotCredential = (Button) findViewById(R.id.btnForgotPassw);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(base_url)
@@ -104,11 +107,11 @@ public class LogIn extends AppCompatActivity {
         btnEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*String usr = txtUser.getText().toString();
+                String usr = txtUser.getText().toString();
                 String pasw = txtPassword.getText().toString();
-                existingUser(usr,pasw);*/
-                Intent home = new Intent(LogIn.this,Home.class);
-                startActivity(home);
+                existingUser(usr,pasw);
+                //Intent home = new Intent(LogIn.this,AboutBiciTEC.class);
+                //startActivity(home);
             }
         });
         forgotCredential.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +140,11 @@ public class LogIn extends AppCompatActivity {
                     if(loginData.getAuthentication().equals("ok")){
                         us = new User(userName);
                         verifyUserLoan(us.getUserName());
-
+                        /*Intent qrIntent = new Intent(LogIn.this,QrScanner.class);
+                        qrIntent.putExtra("userId",us.getUserName());
+                        qrIntent.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, "asd");
+                        qrIntent.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,"asd");
+                        startActivity(qrIntent);*/
                     }
                 }
                 else{
@@ -152,35 +159,7 @@ public class LogIn extends AppCompatActivity {
         });
     }
 
-    private boolean verifyUserLoan(final String usr){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myUserRef = database.getReference("User").child(usr).child("PrestamoActivo");
-        myUserRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String loanValue = (String)dataSnapshot.getValue();
-                if(loanValue == null || loanValue.equals("")){
-                    Intent qrIntent = new Intent(LogIn.this,QrScanner.class);
-                    qrIntent.putExtra("userId",usr);
-                    qrIntent.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, "asd");
-                    qrIntent.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,"asd");
-                    startActivity(qrIntent);
-                }
-                else{
-                    LoanConfirmed.setLoanKey(loanValue);
-                    HoursDifference hoursDifference = new HoursDifference();
-                    String[] params = new String[2];
-                    params[0] = loanValue;
-                    params[1] = usr;
-                    hoursDifference.execute(params);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-        return true;
-    }
+
 
     //Pop up incorrect user
     public void showIncorrectUserPopUp(){
@@ -235,7 +214,36 @@ public class LogIn extends AppCompatActivity {
     public static Api getApi() {
         return api;
     }
-
+    private void verifyUserLoan(final String usr){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myUserRef = database.getReference("User").child(usr).child("PrestamoActivo");
+        postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String loanValue = (String)dataSnapshot.getValue();
+                if(loanValue == null || loanValue.equals("")){
+                    Intent qrIntent = new Intent(LogIn.this,QrScanner.class);
+                    qrIntent.putExtra("userId",usr);
+                    qrIntent.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, "asd");
+                    qrIntent.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,"asd");
+                    finish();
+                    startActivity(qrIntent);
+                }
+                else{
+                    LoanConfirmed.setLoanKey(loanValue);
+                    HoursDifference hoursDifference = new HoursDifference();
+                    String[] params = new String[2];
+                    params[0] = loanValue;
+                    params[1] = usr;
+                    hoursDifference.execute(params);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+        myUserRef.addValueEventListener(postListener);
+    }
     private class UserLoanHour extends AsyncTask<String, Integer, Integer>{
 
         @Override
@@ -250,8 +258,8 @@ public class LogIn extends AppCompatActivity {
                 e.printStackTrace();
             }
             if(time.isSuccessful()){
-                    TimeResponse times = time.body();
-                    date = times.getServer_time();
+                TimeResponse times = time.body();
+                date = times.getServer_time();
                 try {
                     Date dateUser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(voids[1]);
                     Date dateNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
@@ -261,11 +269,11 @@ public class LogIn extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                    //return "Hola";
-                }
-                //TimeResponse time = call.execute().body();
-                //Date nowDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time.getServer_time());
-                //return nowDate;
+                //return "Hola";
+            }
+            //TimeResponse time = call.execute().body();
+            //Date nowDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time.getServer_time());
+            //return nowDate;
 
 
             return 0;
@@ -284,12 +292,14 @@ public class LogIn extends AppCompatActivity {
                     activeLoan.putExtra("LongTime",(long)integer);
                     activeLoan.putExtra(LoanConfirmed.EXTRAS_DEVICE_NAME, "asd");
                     activeLoan.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,mDeviceAddress);
+                    finish();
                     startActivity(activeLoan);
                 }
-               else{
+                else{
                     Intent loanExpired = new Intent(LogIn.this,LoanExpired.class);
                     loanExpired.putExtra("LongTime",(long)integer);
                     loanExpired.putExtra(LoanConfirmed.EXTRAS_DEVICE_ADDRESS,mDeviceAddress);
+                    finish();
                     startActivity(loanExpired);
                 }
                 /*if(hours > 0){
@@ -312,25 +322,25 @@ public class LogIn extends AppCompatActivity {
             myUserRef.child("horaInicio").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String nowDate = (String) dataSnapshot.getValue();//new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse((String) dataSnapshot.getValue());
-                        final String[] params = new String[2];
-                        params[0] = "2017103300";
-                        params[1] = nowDate;
+                    String nowDate = (String) dataSnapshot.getValue();//new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse((String) dataSnapshot.getValue());
+                    final String[] params = new String[2];
+                    params[0] = "2017103300";
+                    params[1] = nowDate;
 
-                        myUserRef.child("adressFeather").addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                mDeviceAddress = (String) dataSnapshot.getValue();
-                                UserLoanHour userLoanHour = new UserLoanHour();
-                                userLoanHour.execute(params);
-                            }
+                    myUserRef.child("adressFeather").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            mDeviceAddress = (String) dataSnapshot.getValue();
+                            UserLoanHour userLoanHour = new UserLoanHour();
+                            userLoanHour.execute(params);
+                        }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
-                        });
-                        //Date dateUser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(userLoanDate);
+                        }
+                    });
+                    //Date dateUser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(userLoanDate);
                        /* long milliseconds = nowDate.getTime() - date.getTime();
                         int seconds = (int) (milliseconds / 1000) % 60;
                         int minutes = (int) ((milliseconds / (1000 * 60)) % 60);
@@ -348,5 +358,11 @@ public class LogIn extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myUserRef.removeEventListener(postListener);
     }
 }

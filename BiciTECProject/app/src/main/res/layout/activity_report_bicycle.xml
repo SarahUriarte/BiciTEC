@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.bicitec_project.ReportBicycle">
+
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="550dp"
+        android:layout_centerHorizontal="true">
+        <RelativeLayout
+            android:id="@+id/rlParking"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:layout_width="13dp"
+                android:layout_height="15dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/ic_ubicacion" />
+            <RelativeLayout
+                android:id="@+id/layou1"
+                android:layout_width="300dp"
+                android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:background="#F2F2F3"
+                android:layout_marginTop="20dp">
+                <TextView
+                    android:id="@+id/txt_parqueo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Seleccione el bici-parqueo donde se encuentra" />
+                <Spinner
+                    android:id="@+id/spnParqueos"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/txt_parqueo"
+                    />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlNumber"
+            android:layout_below="@+id/rlParking"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="17dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bici_logo" />
+            <RelativeLayout
+                android:id="@+id/layout2"
+                android:layout_width="300dp"
+                android:layout_height="55dp"
+                android:layout_centerHorizontal="true"
+                android:background="#F2F2F3"
+                android:layout_marginTop="20dp">
+                <TextView
+                    android:id="@+id/txt_num_bici"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Número de bicicleta" />
+                <EditText
+                    android:id="@+id/txtParqueos"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_below="@+id/txt_num_bici"
+                    android:textSize="10dp"
+                    />
+                <Button
+                    android:id="@+id/btnInfo"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/ic_information"
+                    android:layout_marginLeft="270dp"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlDamage"
+            android:layout_below="@+id/rlNumber"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="18dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/ic_settings" />
+            <RelativeLayout
+                android:id="@+id/layout3"
+                android:layout_width="300dp"
+                android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:background="#F2F2F3"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/txt_damage"
+                    android:layout_width="117dp"
+                    android:layout_height="wrap_content"
+                    android:text="Parte dañada" />
+                <Spinner
+                    android:id="@+id/spnDamage"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/txt_damage"
+                    />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rlAttachPic"
+            android:layout_below="@+id/rlDamage"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:id="@+id/ic_cam"
+                android:layout_width="15dp"
+                android:layout_height="17dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/ic_camara" />
+            <RelativeLayout
+                android:id="@+id/layout4"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="#F2F2F3"
+                android:layout_below="@+id/ic_cam">
+
+                <TextView
+                    android:id="@+id/txt_attach"
+                    android:layout_width="117dp"
+                    android:layout_height="wrap_content"
+                    android:text="Parte dañada" />
+
+                <Button
+                    android:id="@+id/btnAttach"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/ic_plus"
+                    android:layout_marginLeft="270dp"/>
+                <ImageView
+                    android:layout_below="@+id/btnAttach"
+                    android:id="@+id/imgAttached"
+                    android:layout_width="200dp"
+                    android:layout_height="120dp"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rlDesc"
+            android:layout_below="@+id/rlAttachPic"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:id="@+id/ic_comment"
+                android:layout_width="15dp"
+                android:layout_height="17dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/ic_suggest" />
+            <RelativeLayout
+                android:layout_below="@+id/ic_comment"
+                android:id="@+id/layout5"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="#F2F2F3">
+
+                <EditText
+                    android:id="@+id/txt_suggestion"
+                    android:layout_width="280dp"
+                    android:layout_height="110dp"
+                    android:ems="10"
+                    android:maxLength="200"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="#F2F2F3"
+                    android:inputType="textMultiLine"
+                    android:gravity="top|left"
+                    android:textSize="12dp"
+                    android:fontFamily="@font/open_sans"
+                    android:hint=" Introduzca su comentario
+                                    (200 caracteres)"/>
+
+                <ImageView
+                    android:id="@+id/imgPen"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/ic_pencil"
+                    android:layout_marginLeft="270dp"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <Button
+            android:layout_width="143dp"
+            android:layout_height="34dp"
+            android:layout_below="@+id/rlDesc"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/ic_send_report"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+</RelativeLayout>

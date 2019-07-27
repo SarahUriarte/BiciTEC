@@ -19,17 +19,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.example.bicitec_project.Classes.Bicycle;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,7 +33,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.Result;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
@@ -64,6 +59,10 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
 
     Dialog intructionsPopUp;
     Dialog readingErrorPopUp;
+
+    // Database
+    DatabaseReference myRef;
+    ValueEventListener postListener;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,6 +209,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
     public void onDestroy() {
         super.onDestroy();
         scannerView.stopCamera();
+        myRef.removeEventListener(postListener);
     }
 
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -263,9 +263,9 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
         scannerView.resumeCameraPreview(QrScanner.this);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Bicycle");
+        myRef = database.getReference("Bicycle");
 
-        ValueEventListener postListener = new ValueEventListener() {
+        postListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 boolean direccionEncontrada = false;
@@ -277,6 +277,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
                         Intent loanConfirmed = new Intent(QrScanner.this,BtScanner.class);
                         loanConfirmed.putExtra(BtScanner.EXTRAS_DEVICE_NAME, deviceName);
                         loanConfirmed.putExtra(BtScanner.EXTRAS_DEVICE_ADDRESS,bici.getAdress());
+                        loanConfirmed.putExtra(BtScanner.EXTRAS_STATION, bici.getStation());
                         finish();
                         startActivity(loanConfirmed);
                         direccionEncontrada = true;
@@ -321,4 +322,5 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
         });
         readingErrorPopUp.show();
     }
+
 }

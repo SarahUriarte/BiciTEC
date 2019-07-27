@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.location.gps" />
 
@@ -26,14 +27,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".StolenBicycle"></activity>
+        <activity android:name=".AboutBiciTEC"></activity>
+        <activity android:name=".ReportBicycle" />
+        <activity android:name=".Suggestions">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Home" />
+        </activity>
+        <activity android:name=".StolenBicycle" />
         <activity android:name=".LoanExpired" />
         <activity android:name=".WriteCode" />
         <activity android:name=".BtScanner" />
         <activity android:name=".QrScannerFinish" />
-        <activity android:name=".Home"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+        <activity
+            android:name=".Home"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".LoanFinished" />
         <activity android:name=".LoanConfirmed" />
         <activity android:name=".ActiveLoan" />

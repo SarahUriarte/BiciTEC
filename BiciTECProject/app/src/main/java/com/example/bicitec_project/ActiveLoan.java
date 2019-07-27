@@ -99,6 +99,8 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Toast.makeText(getApplicationContext(),"Me destruí",Toast.LENGTH_SHORT).show();
+        timer.cancel();
     }
 
 
@@ -143,6 +145,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
                 showConfirmFinishPopUp();
             }
         });
+
 
     }
 
@@ -368,9 +371,12 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
                 Intent finishLoan = new Intent(ActiveLoan.this,QrScannerFinish.class);
                 finishLoan.putExtra("DeviceName",mDeviceName);
                 finishLoan.putExtra("DeviceAdress",mDeviceAddress);
+                finish();
                 startActivity(finishLoan);
             }
         });
         confirmFinish.show();
     }
+
+
 }

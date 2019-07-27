@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.bicitec_project.Suggestions">
+
+    <RelativeLayout
+        android:layout_width="350dp"
+        android:layout_height="400dp"
+        android:layout_centerHorizontal="true">
+        <EditText
+            android:id="@+id/txt_suggestion"
+            android:layout_width="280dp"
+            android:layout_height="250dp"
+            android:ems="10"
+            android:maxLength="200"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:background="#F2F2F3"
+            android:inputType="textMultiLine"
+            android:gravity="top|left"
+            android:hint="  Introduzca su comentario               (200 caracteres)"/>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="25dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="74dp"
+            android:background="@drawable/ic_suggest" />
+
+        <RelativeLayout
+            android:id="@+id/btnSendSug"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_suggestion"
+            android:layout_centerHorizontal="true"
+            android:background="#000"
+            android:layout_marginTop="10dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="31dp"
+                android:fontFamily="@font/open_sans"
+                android:gravity="top|left"
+                android:text="Enviar"
+                android:textColor="#fff"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:background="@drawable/ic_send"
+                android:layout_marginLeft="3dp"/>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

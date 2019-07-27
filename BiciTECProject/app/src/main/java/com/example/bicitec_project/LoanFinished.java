@@ -270,6 +270,8 @@ public class LoanFinished extends AppCompatActivity{
             super.onPostExecute(aVoid);
             mBluetoothLeService.disconnect();
             getTime();
+            finishViewReq.setVisibility(View.INVISIBLE);
+            finishView.setVisibility(View.VISIBLE);
 
         }
     }
