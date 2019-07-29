@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,14 +8,21 @@
 
     <RelativeLayout
         android:id="@+id/activeLoanView"
-        android:layout_width="300dp"
-        android:layout_height="500dp"
-        android:elevation="8dp"
-        android:alpha="0.93"
-        android:background="#FFFF"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:visibility="visible">
+        android:layout_marginStart="55dp"
+        android:layout_marginEnd="55dp"
+        android:layout_marginBottom="116dp"
+        android:alpha="0.93"
+        android:background="#FFFF"
+        android:elevation="8dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCerrarCandado">
 
         <Button
             android:id="@+id/btnFinishLoan"
@@ -24,8 +31,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="50dp"
             android:layout_marginTop="440dp"
-            android:background="@drawable/ic_boton_finalizar"
-            />
+            android:background="@drawable/ic_boton_finalizar" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -114,19 +120,20 @@
             android:textSize="25dp" />
 
 
-
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/activeLoanViewFinishing"
         android:layout_width="300dp"
         android:layout_height="400dp"
-        android:elevation="8dp"
-        android:alpha="0.93"
-        android:background="#FFFF"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:visibility="invisible">
+        android:alpha="0.93"
+        android:background="#FFFF"
+        android:elevation="8dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnCerrarCandado">
 
 
         <ImageView
@@ -200,8 +207,7 @@
             android:gravity="center_horizontal"
             android:text="0.0km"
             android:textColor="@android:color/black"
-            android:textColorHint="@android:color/black"
-            />
+            android:textColorHint="@android:color/black" />
 
         <TextView
             android:id="@+id/txtTimer2"
@@ -222,8 +228,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="0dp"
+        android:layout_marginBottom="67dp"
         android:text="Cerrar candado"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/activeLoanView"
+        app:layout_constraintStart_toStartOf="@+id/activeLoanViewFinishing"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
