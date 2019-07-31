@@ -205,12 +205,11 @@ public class LoanConfirmed extends AppCompatActivity {
     public void crearInstanciaFirebase(String time){
         DatabaseReference myRef = database.getReference("Record");
         DatabaseReference myBicycleRef = database.getReference("Bicycle").child(mDeviceAddress).child("state");
-        Record record = new Record(LogIn.getUs().getUserName(),time,"",mDeviceAddress,"","");
+        Record record = new Record(LogIn.getUs().getUserName(),time,"",mDeviceAddress,estacionSalida,-1);
         loanKey = myRef.push().getKey();
         myRef.child(loanKey).setValue(record);
-        //requesTimer(key,1);
         myBicycleRef.setValue("not available");
-        changeStationSpace();
+
     }
     public void saveUserLoan(String date){
         DatabaseReference myRef = database.getReference("User").child(LogIn.getUs().getUserName());
@@ -231,11 +230,12 @@ public class LoanConfirmed extends AppCompatActivity {
                     String hour = date[1];
                     crearInstanciaFirebase(time.getServer_time());
                     saveUserLoan(time.getServer_time());
+                    changeStationSpace();
                 }
             }
             @Override
             public void onFailure(Call<TimeResponse> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),"Fallé",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"No pude conseguir la hora",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -381,6 +381,7 @@ public class LoanConfirmed extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             //crearInstanciaFirebase();
             getTime();
+
             //saveUserLoan();
             return null;
         }
@@ -403,10 +404,13 @@ public class LoanConfirmed extends AppCompatActivity {
         postListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int spaces = (int) dataSnapshot.getValue();
-                myStationRef.setValue(spaces+1);
+                long spaces = (long) dataSnapshot.getValue();
+                int suma = (int) spaces + 1;
+                //Toast.makeText(getApplicationContext(),Integer.toString(suma),Toast.LENGTH_SHORT).show();
+                myStationRef.setValue(suma);
+                database.getReference("Bicycle").child(mDeviceAddress).child("station").setValue("");
+                myStationRef.removeEventListener(postListener);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 //Falta código para todos los onCancelled
@@ -414,5 +418,7 @@ public class LoanConfirmed extends AppCompatActivity {
         };
         myStationRef.addValueEventListener(postListener);
     }
-
+    @Override
+    public void onBackPressed() {
+    }
 }

@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,14 +20,19 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.bicitec_project.Classes.TimeResponse;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoanFinished extends AppCompatActivity{
+    public static final String EXTRAS_FINISH_STATION = "STATION";
+
     /*UI Elements*/
     private RelativeLayout finishView;
     private RelativeLayout finishViewReq;
@@ -38,9 +44,15 @@ public class LoanFinished extends AppCompatActivity{
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
     private String mDeviceAddress;
     private String mDeviceName;
+    private String estacionFinal;
     private BluetoothLeService mBluetoothLeService = LoanConfirmed.getBluethothLeService();
     private boolean mConnected = false;
+    //For firebase
+    FirebaseDatabase database;
+    DatabaseReference myStationRef;
+    ValueEventListener postListener;
     private Button but;
+    private Button btnAccept;
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -115,6 +127,8 @@ public class LoanFinished extends AppCompatActivity{
                     endLoanTask.execute();
                 }*/
                 /***ABEL END */
+                WriteThread writeThread = new WriteThread();
+                writeThread.execute();
             }
 
         }
@@ -135,9 +149,13 @@ public class LoanFinished extends AppCompatActivity{
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
         final Intent intent = getIntent();
         mDeviceAddress = intent.getStringExtra("DeviceAdress");
+        estacionFinal = intent.getStringExtra(EXTRAS_FINISH_STATION);
+
+        database = FirebaseDatabase.getInstance();
         finishView = (RelativeLayout)findViewById(R.id.finishView);
         finishViewReq = (RelativeLayout) findViewById(R.id.finishViewReq);
         but = (Button)findViewById(R.id.button);
+        btnAccept = (Button)findViewById(R.id.btnAccept);
         but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,6 +187,14 @@ public class LoanFinished extends AppCompatActivity{
                 writeThread.execute();
             }
         });
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent home = new Intent(LoanFinished.this,Home.class);
+                finish();
+                startActivity(home);
+            }
+        });
 
         //observable.subscribe(observer);
 
@@ -187,7 +213,7 @@ public class LoanFinished extends AppCompatActivity{
 
     private void finishLoanOnDB(String time){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Historial").child(LoanConfirmed.getLoanKey());
+        DatabaseReference myRef = database.getReference("Record").child(LoanConfirmed.getLoanKey());
         DatabaseReference myUserRef = database.getReference("User").child(LogIn.getUs().getUserName());
         DatabaseReference myBiciRef = database.getReference("Bicycle").child(mDeviceAddress);
         myRef.child("estado").setValue("Terminado");
@@ -195,6 +221,25 @@ public class LoanFinished extends AppCompatActivity{
         myUserRef.child(LoanConfirmed.getLoanKey()).child("loanState").setValue("Terminado");
         myUserRef.child("PrestamoActivo").setValue("");
         myBiciRef.child("state").setValue("available");
+        changeStationSpace();
+    }
+    private void changeStationSpace(){
+        myStationRef = database.getReference("Station").child(estacionFinal).child("Space");
+        postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long spaces = (long) dataSnapshot.getValue();
+                int suma = (int) spaces - 1;
+                myStationRef.setValue(suma);
+                database.getReference("Bicycle").child(mDeviceAddress).child("station").setValue(Integer.parseInt(estacionFinal));
+                myStationRef.removeEventListener(postListener);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //Falta código para todos los onCancelled
+            }
+        };
+        myStationRef.addValueEventListener(postListener);
     }
 
     @Override
@@ -292,5 +337,10 @@ public class LoanFinished extends AppCompatActivity{
                 Toast.makeText(getApplicationContext(),"Fallé",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

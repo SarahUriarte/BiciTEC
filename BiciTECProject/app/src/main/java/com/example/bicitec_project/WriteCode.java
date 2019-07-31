@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,8 +23,10 @@ public class WriteCode extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_code);
+        Log.d("Qr", "Estoy en el on create del write");
         textCode = (EditText)findViewById(R.id.txtCode);
         btnAccept = (Button)findViewById(R.id.btnGo);
+        Log.d("Qr", "Ya hice los botones");
         btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,5 +77,6 @@ public class WriteCode extends AppCompatActivity {
 
             }
         });
+        Log.d("Qr", "Estoy saliendo del onCreate");
     }
 }

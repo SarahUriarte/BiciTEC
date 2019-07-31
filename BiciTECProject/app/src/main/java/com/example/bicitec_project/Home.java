@@ -46,6 +46,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             /*Intent statistics1 = new Intent(MainWindow.this, BestStudentsActivity.class);
             startActivity(statistics1);*/
         }
+        if(id == R.id.menu_alquilar_bicicleta){
+            Intent qr = new Intent(Home.this, QrScanner.class);
+            startActivity(qr);
+        }
         /*if (id == R.id.nav_home) {
             Intent statistics1 = new Intent(MainWindow.this, BestStudentsActivity.class);
             startActivity(statistics1);
@@ -61,5 +65,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    @Override
+    public void onBackPressed() {
     }
 }

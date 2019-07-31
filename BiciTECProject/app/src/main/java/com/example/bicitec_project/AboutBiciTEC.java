@@ -10,4 +10,8 @@ public class AboutBiciTEC extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_bici_tec);
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

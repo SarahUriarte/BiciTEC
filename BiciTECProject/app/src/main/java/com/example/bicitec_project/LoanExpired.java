@@ -113,7 +113,7 @@ public class LoanExpired extends AppCompatActivity {
         timeLeft += seconds;*/
         if (minutes == 0 && seconds == 1) {
             //stopTimer();
-            Toast.makeText(getApplicationContext(), "Time over", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Time over", Toast.LENGTH_SHORT).show();
            /*Cambia a la pantalla de robado*/
 
         }
@@ -141,5 +141,8 @@ public class LoanExpired extends AppCompatActivity {
             }
         });
         confirmFinish.show();
+    }
+    @Override
+    public void onBackPressed() {
     }
 }

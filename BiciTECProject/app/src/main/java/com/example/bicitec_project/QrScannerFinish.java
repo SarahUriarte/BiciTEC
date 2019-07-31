@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.bicitec_project.Classes.Station;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,6 +35,12 @@ public class QrScannerFinish extends AppCompatActivity implements ZXingScannerVi
     private String mDeviceName;
     Dialog readingErrorPopUp;
     private static boolean verifyActivity = false;
+
+    //For firebase
+    FirebaseDatabase database;
+    DatabaseReference myStationRef;
+    ValueEventListener postListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +51,7 @@ public class QrScannerFinish extends AppCompatActivity implements ZXingScannerVi
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra("DeviceName");
         mDeviceAddress = intent.getStringExtra("DeviceAdress");
+        database = FirebaseDatabase.getInstance();
         readingErrorPopUp = new Dialog(this);
         int currentApiVersion = Build.VERSION.SDK_INT;
 
@@ -140,15 +148,35 @@ public class QrScannerFinish extends AppCompatActivity implements ZXingScannerVi
 
         //Toast.makeText(getApplicationContext(), myResult, Toast.LENGTH_LONG).show();
         scannerView.resumeCameraPreview(QrScannerFinish.this);
-
-        if(mDeviceAddress.equals(myResult)){
-            Intent loanFinished = new Intent(QrScannerFinish.this,LoanFinished.class);
-            loanFinished.putExtra("DeviceAdress",mDeviceAddress);
-            startActivity(loanFinished);
-        }
-        else{
-            showErrorReadingPopUp();
-        }
+        myStationRef = database.getReference("Station");
+        postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean find = false;
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                    if(postSnapshot.getKey().equals(myResult)){
+                        Intent loanFinished = new Intent(QrScannerFinish.this,LoanFinished.class);
+                        loanFinished.putExtra("DeviceAdress",mDeviceAddress);
+                        loanFinished.putExtra(LoanFinished.EXTRAS_FINISH_STATION, myResult);
+                        startActivity(loanFinished);
+                        find = true;
+                        finish();
+                        myStationRef.removeEventListener(postListener);
+                    }
+                }
+                if(!isFinishing() && !find){
+                    Toast.makeText(getApplicationContext(),
+                            "El código que está escaneando no coincide con el de ninguna estación",
+                            Toast.LENGTH_SHORT).show();
+                            scannerView.startCamera();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //Falta código para todos los onCancelled
+            }
+        };
+        myStationRef.addValueEventListener(postListener);
 
     }
     public void showErrorReadingPopUp(){
@@ -181,5 +209,10 @@ public class QrScannerFinish extends AppCompatActivity implements ZXingScannerVi
 
     public static String getmDeviceAddress() {
         return mDeviceAddress;
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

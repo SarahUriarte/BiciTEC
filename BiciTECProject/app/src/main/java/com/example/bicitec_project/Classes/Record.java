@@ -7,10 +7,10 @@ public class Record {
     private String horaInicio;
     private String horaFin;
     private String adressFeather;
-    private String estacionSalida;
-    private String estacionLlegada;
+    private int estacionSalida;
+    private int estacionLlegada;
 
-    public Record(String user, String horaInicio, String horaFin, String adressFeather, String estacionSalida, String estacionLlegada) {
+    public Record(String user, String horaInicio, String horaFin, String adressFeather, int estacionSalida, int estacionLlegada) {
         this.user = user;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
@@ -35,11 +35,11 @@ public class Record {
         return adressFeather;
     }
 
-    public String getEstacionSalida() {
+    public int getEstacionSalida() {
         return estacionSalida;
     }
 
-    public String getEstacionLlegada() {
+    public int getEstacionLlegada() {
         return estacionLlegada;
     }
 }

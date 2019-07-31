@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -22,6 +23,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.bicitec_project.Classes.Bicycle;
@@ -57,12 +59,16 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
     private BluetoothLeScanner mLEScanner;
     private List<ScanFilter> filters;
 
-    Dialog intructionsPopUp;
-    Dialog readingErrorPopUp;
+    private Dialog intructionsPopUp;
+    private Dialog readingErrorPopUp;
 
     // Database
     DatabaseReference myRef;
     ValueEventListener postListener;
+
+    //Timer
+    private CountDownTimer timer;
+    long loanTime = 30000;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +105,15 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
 
         if (currentApiVersion >= Build.VERSION_CODES.M) {
             if (checkPermission()) {
-                Toast.makeText(getApplicationContext(), "Permission already granted!", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Permission already granted!", Toast.LENGTH_LONG).show();
             } else {
                 requestPermission();
             }
         }else{
 
         }
+
+        startTimer();
 
     }
 
@@ -209,7 +217,9 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
     public void onDestroy() {
         super.onDestroy();
         scannerView.stopCamera();
-        myRef.removeEventListener(postListener);
+        if(postListener != null){
+            myRef.removeEventListener(postListener);
+        }
     }
 
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -255,6 +265,7 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
     @Override
     public void handleResult(Result result) {
         scannerView.stopCamera();
+        stopTimer();
         final String myResult = result.getText();
         Log.d("QRCodeScanner", result.getText());
         Log.d("QRCodeScanner", result.getBarcodeFormat().toString());
@@ -272,21 +283,37 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
 
                     Bicycle bici = postSnapshot.getValue(Bicycle.class);
-                    if (bici.getAdress().equals(myResult) && bici.getState().equals("available")) {
-                        String deviceName = "Adafruit Bluefruit LE";
-                        Intent loanConfirmed = new Intent(QrScanner.this,BtScanner.class);
-                        loanConfirmed.putExtra(BtScanner.EXTRAS_DEVICE_NAME, deviceName);
-                        loanConfirmed.putExtra(BtScanner.EXTRAS_DEVICE_ADDRESS,bici.getAdress());
-                        loanConfirmed.putExtra(BtScanner.EXTRAS_STATION, bici.getStation());
-                        finish();
-                        startActivity(loanConfirmed);
-                        direccionEncontrada = true;
-                        break;
+                    if (bici.getAdress().equals(myResult)) {
+                        if(bici.getState().equals("available")){
+                            String deviceName = "Adafruit Bluefruit LE";
+                            Intent loanConfirmed = new Intent(QrScanner.this,BtScanner.class);
+                            loanConfirmed.putExtra(BtScanner.EXTRAS_DEVICE_NAME, deviceName);
+                            loanConfirmed.putExtra(BtScanner.EXTRAS_DEVICE_ADDRESS,bici.getAdress());
+                            loanConfirmed.putExtra(BtScanner.EXTRAS_STATION, bici.getStation());
+                            finish();
+                            startActivity(loanConfirmed);
+                            direccionEncontrada = true;
+                            break;
+                        }else {
+                            Toast.makeText(getApplicationContext(),
+                                    "Esta bicicleta no está disponible",
+                                    Toast.LENGTH_SHORT).show();
+                            scannerView.startCamera();
+                            loanTime = 30000;
+                            startTimer();
+                        }
+
                     }
                 }
                 if(!direccionEncontrada){
                     if(!isFinishing()){
-                        showErrorReadingPopUp();
+                        Toast.makeText(getApplicationContext(),
+                                "Este código no coincide con ninguna bicicleta",
+                                Toast.LENGTH_SHORT).show();
+                        scannerView.startCamera();
+                        loanTime = 30000;
+                        startTimer();
+                        //showErrorReadingPopUp();
                     }
                     //
                 }
@@ -311,16 +338,60 @@ public class QrScanner extends AppCompatActivity implements ZXingScannerView.Res
             public void onClick(View v) {
                 readingErrorPopUp.dismiss();
                 scannerView.startCamera();
+                loanTime = 30000;
+                startTimer();
             }
         });
         digitCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent writeCode = new Intent(QrScanner.this,WriteCode.class);
+                timer.cancel();
+                readingErrorPopUp.cancel();
+                finish();
+                Log.d("Qr", "Estoy en el dimiss");
                 startActivity(writeCode);
             }
         });
         readingErrorPopUp.show();
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
+    public void startTimer() {
+        timer = new CountDownTimer(loanTime, 1000) {
+            @Override
+            public void onTick(long l) {
+                loanTime = l;
+                updateTimer();
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        timer.start();
+    }
+
+    public void stopTimer() {
+        timer.cancel();
+    }
+
+    public void updateTimer() {
+        int seconds = (int) loanTime % 60000 / 1000;
+        //Toast.makeText(getApplicationContext(),Integer.toString(seconds),Toast.LENGTH_SHORT).show();
+        if (seconds == 1) {
+            //stopTimer();
+            //Toast.makeText(getApplicationContext(), "Time over", Toast.LENGTH_SHORT).show();
+            //Intent prestamoActivo = new Intent(PrestamoActivo.this,PrestamoActivo5Min.class);
+            //startActivity(prestamoActivo);
+            if(!isFinishing()){
+                showErrorReadingPopUp();
+            }
+
+        }
+    }
 }

@@ -209,9 +209,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginStart="71dp"
             android:layout_marginTop="536dp"
-            android:background="@drawable/ic_boton_finalizar" />
-
-
+            android:background="@drawable/ic_boton_finalizar"/>
     </RelativeLayout>
 
 

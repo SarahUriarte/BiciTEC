@@ -195,7 +195,6 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
      * en el onTick "l" representa al tiempo que falta para acabar la cuenta*/
     public void startTimer() {
         timer = new CountDownTimer(loanTime, 1000) {
-
             @Override
             public void onTick(long l) {
                 loanTime = l;
@@ -217,7 +216,6 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
     public void updateTimer() {
         int minutes = (int) loanTime / 60000;
         int seconds = (int) loanTime % 60000 / 1000;
-
         String timeLeft = "" + minutes;
         timeLeft += ": ";
         if (seconds < 10) timeLeft += "0";
@@ -235,32 +233,8 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
         }
         if (minutes == 28 && seconds == 1) {
             //stopTimer();
-            Toast.makeText(getApplicationContext(), "Time over", Toast.LENGTH_SHORT).show();
-            /*Intent loanFinished = new Intent(ActiveLoan.this, LoanFinished.class);
-            while (true) {
-                boolean tryWrite = false;
-                byte[] value = new byte[]{67, 108, 111, 115, 101, 71, 97, 83, 69, 83, 76, 97, 98, 33};
-                tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
-                if (tryWrite) {
-                    break;
-                }
-            }
-            while (BluetoothLeService.cont3 == 0) {
-                Log.d("Abel", "cont2 = " + BluetoothLeService.cont2);
-                mBluetoothLeService.enableTXNotification();
-                //Log.d("Abel","response_3 not received");
-            }
-            if (BluetoothLeService.cont3 == 1) {
-                Toast.makeText(getApplicationContext(), "Devuelta", Toast.LENGTH_SHORT);
-                mBluetoothLeService.disconnect();
-                    /*Intent prestamoFinalizado = new Intent(PrestamoActivo.this, PrestamoFinalizado.class);
-                    startActivity(prestamoFinalizado);
-            }*/
-            //loanFinished.putExtra(ActiveLoan.EXTRAS_DEVICE_NAME, mDeviceName);
-            //loanFinished.putExtra(ActiveLoan.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
             Intent loanExpired = new Intent(ActiveLoan.this,LoanExpired.class);
             startActivity(loanExpired);
-
         }
 
         txtTimer.setText(timeLeft);
@@ -378,5 +352,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
         confirmFinish.show();
     }
 
-
+    @Override
+    public void onBackPressed() {
+    }
 }

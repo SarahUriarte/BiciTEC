@@ -87,8 +87,6 @@ public class LogIn extends AppCompatActivity {
         }
         mAuth = FirebaseAuth.getInstance();
 
-
-
         txtUser = (TextView) findViewById(R.id.txtUser);
         txtPassword = (TextView)findViewById(R.id.txtPassword);
         btnEnter = (Button)findViewById(R.id.btnEntrar);
@@ -317,14 +315,13 @@ public class LogIn extends AppCompatActivity {
         @Override
         protected Void doInBackground(final String... voids) {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference myUserRef = database.getReference("Historial").child(voids[0]);
-
+            final DatabaseReference myUserRef = database.getReference("Record").child(voids[0]);
             myUserRef.child("horaInicio").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String nowDate = (String) dataSnapshot.getValue();//new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse((String) dataSnapshot.getValue());
                     final String[] params = new String[2];
-                    params[0] = "2017103300";
+                    params[0] = voids[1];
                     params[1] = nowDate;
 
                     myUserRef.child("adressFeather").addValueEventListener(new ValueEventListener() {
