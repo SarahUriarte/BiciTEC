@@ -37,16 +37,18 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Home" />
+
+        </activity>
+        <activity android:name=".StolenBicycle" />
+        <activity android:name=".LoanExpired" />
+        <activity android:name=".WriteCode" />
+        <activity android:name=".BtScanner">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".StolenBicycle" />
-        <activity android:name=".LoanExpired" />
-        <activity android:name=".WriteCode" />
-        <activity android:name=".BtScanner"/>
         <activity android:name=".QrScannerFinish" />
         <activity
             android:name=".Home"
