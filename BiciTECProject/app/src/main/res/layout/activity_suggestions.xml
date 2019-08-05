@@ -7,26 +7,34 @@
     tools:context="com.example.bicitec_project.Suggestions">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:id="@+id/relativeLayout"
+        android:layout_width="0dp"
+        android:layout_height="353dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <EditText
             android:id="@+id/txt_suggestion"
             android:layout_width="280dp"
             android:layout_height="250dp"
-            android:ems="10"
-            android:maxLength="200"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="220dp"
+            android:layout_centerVertical="true"
             android:background="#F2F2F3"
-            android:inputType="textMultiLine"
+            android:ems="10"
             android:gravity="top|left"
-            android:hint="  Introduzca su comentario               (200 caracteres)"/>
+            android:hint="  Introduzca su comentario               (200 caracteres)"
+            android:inputType="textMultiLine"
+            android:maxLength="200" />
 
         <ImageView
             android:layout_width="30dp"
             android:layout_height="25dp"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="219dp"
+            android:layout_marginTop="55dp"
             android:layout_marginEnd="10dp"
             android:layout_toStartOf="@+id/txt_suggestion"
             android:background="@drawable/ic_suggest" />
@@ -37,9 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_suggestion"
             android:layout_centerHorizontal="true"
-            android:background="#000"
             android:layout_marginTop="10dp"
-            >
+            android:background="#000">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -55,8 +62,8 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="25dp"
-                android:background="@drawable/ic_send"
-                android:layout_marginLeft="3dp"/>
+                android:layout_marginLeft="3dp"
+                android:background="@drawable/ic_send" />
 
         </RelativeLayout>
 
