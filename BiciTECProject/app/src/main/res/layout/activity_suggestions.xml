@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,17 +7,16 @@
     tools:context="com.example.bicitec_project.Suggestions">
 
     <RelativeLayout
-        android:layout_width="350dp"
-        android:layout_height="400dp"
-        android:layout_centerHorizontal="true">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <EditText
             android:id="@+id/txt_suggestion"
             android:layout_width="280dp"
             android:layout_height="250dp"
             android:ems="10"
             android:maxLength="200"
-            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="220dp"
             android:background="#F2F2F3"
             android:inputType="textMultiLine"
             android:gravity="top|left"
@@ -26,10 +25,10 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="25dp"
-            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="11dp"
-            android:layout_marginTop="74dp"
+            android:layout_marginTop="219dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@+id/txt_suggestion"
             android:background="@drawable/ic_suggest" />
 
         <RelativeLayout
@@ -65,4 +64,4 @@
     </RelativeLayout>
 
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
