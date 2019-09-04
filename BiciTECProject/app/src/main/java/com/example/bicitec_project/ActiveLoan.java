@@ -231,7 +231,7 @@ public class ActiveLoan extends AppCompatActivity implements LocationListener {
             activeLoan.setVisibility(View.INVISIBLE);
             activeLoanFinishing.setVisibility(View.VISIBLE);
         }
-        if (minutes == 28 && seconds == 1) {
+        if (minutes == 1 && seconds == 1) {
             //stopTimer();
             Intent loanExpired = new Intent(ActiveLoan.this,LoanExpired.class);
             startActivity(loanExpired);

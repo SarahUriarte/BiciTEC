@@ -63,6 +63,7 @@ public class LogIn extends AppCompatActivity {
     // User
     private static User us;
     private String userLoanDate;
+    private static LogInResponse loginData;
 
     private String mDeviceAddress;
 
@@ -134,7 +135,7 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onResponse(Call<LogInResponse> call, Response<LogInResponse> response) {
                 if(response.code() == 200){
-                    LogInResponse loginData = response.body();
+                    loginData = response.body();
                     if(loginData.getAuthentication().equals("ok")){
                         us = new User(userName);
                         verifyUserLoan(us.getUserName());
@@ -205,9 +206,7 @@ public class LogIn extends AppCompatActivity {
         startActivity( browse );
     }
 
-    public static User getUs() {
-        return us;
-    }
+
 
     public static Api getApi() {
         return api;
@@ -361,5 +360,17 @@ public class LogIn extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         myUserRef.removeEventListener(postListener);
+    }
+
+    public static User getUs() {
+        return us;
+    }
+
+    public static LogInResponse getLoginData() {
+        return loginData;
+    }
+
+    public void setLoginData(LogInResponse loginData) {
+        this.loginData = loginData;
     }
 }

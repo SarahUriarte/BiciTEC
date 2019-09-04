@@ -1,6 +1,7 @@
 package com.example.bicitec_project.api;
 
 import com.example.bicitec_project.Classes.LogInResponse;
+import com.example.bicitec_project.Classes.ReleaseBicycleResponse;
 import com.example.bicitec_project.Classes.TimeResponse;
 import com.example.bicitec_project.Classes.TimerRequest;
 
@@ -24,4 +25,8 @@ public interface Api {
 
     @POST("setTimer")
     Call<String>requestTimer(@Body TimerRequest timerRequest);
+
+    @POST("release_bicycle/{user_id}/{bicycle_id}/{station_id}")
+    Call<ReleaseBicycleResponse> releaseBicycle(@Path("user_id")int user_id, @Path("bicycle_id")String bicycle_id,
+                                                @Path("station_id")int station_id);
 }

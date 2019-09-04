@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.example.bicitec_project.Classes.LogInResponse;
 import com.example.bicitec_project.Classes.Record;
+import com.example.bicitec_project.Classes.ReleaseBicycleResponse;
 import com.example.bicitec_project.Classes.TimeResponse;
 import com.example.bicitec_project.Classes.TimerRequest;
 import com.example.bicitec_project.Classes.UserLoan;
@@ -89,6 +90,10 @@ public class LoanConfirmed extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myStationRef;
     ValueEventListener postListener;
+
+    //Id to store de user loan at TEC digital
+    private static ReleaseBicycleResponse releaseBicycleResponse;
+
     /*----------------------------------------------------------*/
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
@@ -99,15 +104,17 @@ public class LoanConfirmed extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
-                Log.w("Sarah","reading bluethoot");
-                Log.e(TAG, "Unable to initialize Bluetooth");
+                //Log.e(TAG, "Unable to initialize Bluetooth");
+                Log.d("Conexion","Estoy en el mBluetoothLeService.initialize");
                 finish();
             }
             // Automatically connects to the device upon successful start-up initialization.
             if(mBluetoothLeService.connect(mDeviceAddress)){
-                Log.d("Sarah K", "Se conecto bien");
+                //Log.d("Sarah K", "Se conecto bien");
+                Log.d("Conexion","Estoy conectándome con el adress que me dieron");
             }else{
-                Log.d("Sarah K", "No se conecto");
+                //Log.d("Sarah K", "No se conecto");
+                Log.d("Conexion","No me pude conectar");
             }
 
         }
@@ -115,6 +122,7 @@ public class LoanConfirmed extends AppCompatActivity {
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             mBluetoothLeService = null;
+            Log.d("Conexion","Me desconecté");
         }
     };
 
@@ -130,17 +138,16 @@ public class LoanConfirmed extends AppCompatActivity {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
-                /*layoutCofirm = (RelativeLayout) findViewById(R.id.finishView);
-                layoutLoading = (RelativeLayout) findViewById(R.id.progressView);
-                layoutCofirm.setVisibility(View.VISIBLE);
-                layoutLoading.setVisibility(View.INVISIBLE);*/
-                Log.d("BroadcastReceiver", "Esta conectado");
+                Log.d("Conexion","En el broadcast me conecté");
+                //Log.d("BroadcastReceiver", "Esta conectado");
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
-                Log.d("BroadcastReceiver", "No esta conectado");
+                Log.d("Conexion","En el broadcast me desconecté");
+                //Log.d("BroadcastReceiver", "No esta conectado");
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
-
+                Log.d("Conexion","Me encontré otro servicio");
+                Log.d("Conexion","El estado de la variable mConnected es " + mConnected);
                 /**** ABEL ****/
                 //Paso 2.2 Conectarse a la device address del Adafruit Bluefruit LE (Se acaba de hacer aquí)
                 // y esperar la confirmación (Se debe realizar un ciclo para esperar la respuesta)
@@ -173,7 +180,7 @@ public class LoanConfirmed extends AppCompatActivity {
                         }
                     }
                     while (BluetoothLeService.cont2 == 0) {
-                        Log.d("Abel","cont2 = "+BluetoothLeService.cont2);
+                        //Log.d("Abel","cont2 = "+BluetoothLeService.cont2);
                         mBluetoothLeService.enableTXNotification();
                         //Log.d("Abel","response_3 not received");
                     }
@@ -219,6 +226,28 @@ public class LoanConfirmed extends AppCompatActivity {
         myRef.child("PrestamoActivo").setValue(loanKey);
         myRef.child(loanKey).setValue(userLoan);
     }
+
+    private void releaseBycicle(){
+        Call<ReleaseBicycleResponse> call = LogIn.getApi().releaseBicycle(
+                LogIn.getLoginData().getUser_id(),mDeviceAddress,estacionSalida);
+        Toast.makeText(getApplicationContext(),LogIn.getLoginData().getUser_id(),Toast.LENGTH_SHORT).show();
+        call.enqueue(new Callback<ReleaseBicycleResponse>() {
+            @Override
+            public void onResponse(Call<ReleaseBicycleResponse> call, Response<ReleaseBicycleResponse> response) {
+                if(response.code() == 200){
+                    Toast.makeText(getApplicationContext(),"Prestamo en la BD",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"gg",Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ReleaseBicycleResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),"Fallé",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void getTime(){
         Call<TimeResponse>call = LogIn.getApi().time(LogIn.getUs().getUserName());
         call.enqueue(new Callback<TimeResponse>() {
@@ -231,6 +260,7 @@ public class LoanConfirmed extends AppCompatActivity {
                     crearInstanciaFirebase(time.getServer_time());
                     saveUserLoan(time.getServer_time());
                     changeStationSpace();
+                    //releaseBycicle();
                 }
             }
             @Override
@@ -261,61 +291,16 @@ public class LoanConfirmed extends AppCompatActivity {
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
         database = FirebaseDatabase.getInstance();
-        //btnAccept = (Button)findViewById(R.id.btnAccept);
-
-        /*btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("Sarah1", "cont "+BluetoothLeService.cont);
-                mBluetoothLeService.enableTXNotification();
-                /*if(BluetoothLeService.cont == 1){
-                    Log.d("Abel","cont = "+BluetoothLeService.cont +" response 2.2 received");
-                    //Toast.makeText(getApplicationContext(),"Conectado",Toast.LENGTH_SHORT).show();
-
-                    //crearInstanciaFirebase("En curso");
-                }*/
-                /*while (true){
-                    boolean tryWrite = false;
-                    byte[] value = new byte[]{79, 112, 101, 110, 71, 97, 83, 69, 83, 76, 97, 98, 33};
-                    tryWrite = mBluetoothLeService.writeRXCharacteristic(value);
-                    if(tryWrite){
-                        break;
-                    }
-                }
-                while (BluetoothLeService.cont2 == 0) {
-                    Log.d("Abel","cont2 = "+BluetoothLeService.cont2);
-                    mBluetoothLeService.enableTXNotification();
-                    //Log.d("Abel","response_3 not received");
-                }
-                if(BluetoothLeService.cont2 == 1){
-                    Intent activeLoan = new Intent(LoanConfirmed.this,ActiveLoan.class);
-                    //crearInstanciaFirebase();
-                    //saveUserLoan();
-                    activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_NAME, mDeviceName);
-                    activeLoan.putExtra(ActiveLoan.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
-                    startActivity(activeLoan);
-                }*/
-                /*ActiveLoanTask activeLoanTask = new ActiveLoanTask();
-                activeLoanTask.execute();
-            }
-        });*/
-        /*Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(base_url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        api = retrofit.create(Api.class);*/
 
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();
-
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-        try {
-            Thread.sleep(2000);
-        }catch (Exception e){
-
+        if (mBluetoothLeService != null) {
+            final boolean result = mBluetoothLeService.connect(mDeviceAddress);
+            //Log.d(TAG, "Connect request result=" + result);
         }
     }
     @Override
@@ -332,48 +317,11 @@ public class LoanConfirmed extends AppCompatActivity {
         mBluetoothLeService = null;
         myStationRef.removeEventListener(postListener);
     }
-
-
-    public static BluetoothLeService getBluethothLeService(){
-        return mBluetoothLeService;
+    @Override
+    public void onBackPressed() {
     }
 
-    /*private void requesTimer(String token, int action){
-        TimerRequest timerRequest = new TimerRequest(token,action);
-        Call<String> call = api.requestTimer(timerRequest);
 
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if(!response.isSuccessful()){
-                    Log.d("Sarah","Me morí");
-                    return;
-                }
-                Toast.makeText(getApplicationContext(),response.body(),Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),"gg",Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
-
-    public static String getLoanKey() {
-        return loanKey;
-    }
-
-    public static String getUserLoanKey() {
-        return userLoanKey;
-    }
-
-    public static void setLoanKey(String loanKey) {
-        LoanConfirmed.loanKey = loanKey;
-    }
-
-    public static void setUserLoanKey(String userLoanKey) {
-        LoanConfirmed.userLoanKey = userLoanKey;
-    }
 
     private class ActiveLoanTask extends AsyncTask<Void, Integer, Void> {
 
@@ -418,7 +366,24 @@ public class LoanConfirmed extends AppCompatActivity {
         };
         myStationRef.addValueEventListener(postListener);
     }
-    @Override
-    public void onBackPressed() {
+
+    public static BluetoothLeService getBluethothLeService(){
+        return mBluetoothLeService;
+    }
+
+    public static String getLoanKey() {
+        return loanKey;
+    }
+
+    public static String getUserLoanKey() {
+        return userLoanKey;
+    }
+
+    public static void setLoanKey(String loanKey) {
+        LoanConfirmed.loanKey = loanKey;
+    }
+
+    public static void setUserLoanKey(String userLoanKey) {
+        LoanConfirmed.userLoanKey = userLoanKey;
     }
 }

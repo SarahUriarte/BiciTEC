@@ -2,9 +2,9 @@ package com.example.bicitec_project.Classes;
 
 public class LogInResponse {
     private String authentication;
-    private String user_id;
+    private int user_id;
 
-    public LogInResponse(String authentication, String user_id) {
+    public LogInResponse(String authentication, int user_id) {
         this.authentication = authentication;
         this.user_id = user_id;
     }
@@ -13,7 +13,7 @@ public class LogInResponse {
         return authentication;
     }
 
-    public String getUser_id() {
+    public int getUser_id() {
         return user_id;
     }
 }
